@@ -3,33 +3,15 @@
 import { useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import {
-  Crown,
-  TrendingUp,
-  Store,
-  Building2,
-  Heart,
-  Flower2,
-  Cake,
   Check,
   ChevronRight,
   ChevronLeft,
   Loader2,
   ArrowLeft,
-  Home,
+  Flower2,
 } from "lucide-react";
 import { SCENES, STYLES, BUDGET_RANGES, MAESTROS } from "@/lib/mock-data";
 import type { Maestro, FlowerStyle } from "@/lib/mock-data";
-
-// Icon mapping
-const SCENE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  Crown,
-  TrendingUp,
-  Store,
-  Building2,
-  Heart,
-  Flower2,
-  Cake,
-};
 
 // Step definitions
 const STEPS = [
@@ -38,11 +20,15 @@ const STEPS = [
   { id: 3, label: "お届け先とご確認" },
 ] as const;
 
-// Rank badge styling
-const RANK_STYLES: Record<string, string> = {
-  "S-RANK": "bg-cq-primary/85 text-cq-accent border border-cq-primary/20",
-  "A-RANK": "bg-cq-primary/70 text-cq-surface border border-cq-primary/15",
-  DEBUT: "bg-cq-surface text-cq-text-secondary border border-cq-border",
+// Scene images for visual selection
+const SCENE_IMAGES: Record<string, string> = {
+  inauguration: "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=400&h=300&fit=crop&q=80",
+  ipo: "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=400&h=300&fit=crop&q=80",
+  opening: "https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=400&h=300&fit=crop&q=80",
+  relocation: "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=400&h=300&fit=crop&q=80",
+  gratitude: "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=400&h=300&fit=crop&q=80",
+  condolence: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop&q=80",
+  birthday: "https://images.unsplash.com/photo-1457089328109-e5d9bd499191?w=400&h=300&fit=crop&q=80",
 };
 
 // Form state
@@ -99,9 +85,7 @@ export default function OrderPage() {
 
   const handlePostalCode = useCallback(
     (value: string) => {
-      // Remove non-digits
       const digits = value.replace(/\D/g, "");
-      // Auto-hyphen
       if (digits.length <= 3) {
         updateForm("postalCode", digits);
       } else {
@@ -146,24 +130,37 @@ export default function OrderPage() {
   // Completion screen
   if (isComplete) {
     return (
-      <div className="max-w-2xl mx-auto py-20 text-center space-y-6">
-        <div className="mx-auto w-20 h-20 bg-cq-accent/10 rounded-[var(--cq-radius-lg)] flex items-center justify-center border border-cq-accent/20">
-          <Check className="w-10 h-10 text-cq-primary" />
+      <div className="max-w-2xl mx-auto py-20 text-center space-y-8">
+        <div className="mx-auto w-16 h-16 flex items-center justify-center">
+          <Flower2 className="w-10 h-10 text-cq-accent" />
         </div>
-        <h1 className="text-3xl text-cq-text font-light tracking-wide">
-          ご注文ありがとうございます
-        </h1>
-        <p className="text-cq-text-secondary text-lg font-light">
-          マエストロが心を込めてお仕立ていたします
-        </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
-          <button onClick={handleReset} className="cq-btn-primary">
-            <Flower2 className="w-4 h-4" />
-            NEW ORDER
+        <div className="space-y-3">
+          <p className="text-[10px] tracking-[0.3em] uppercase text-cq-accent/80">
+            ORDER CONFIRMED
+          </p>
+          <h1 className="cq-heading-display text-3xl text-cq-text font-light tracking-wide">
+            ご注文ありがとうございます
+          </h1>
+          <p className="text-cq-text-secondary/70 text-sm font-light max-w-sm mx-auto leading-relaxed">
+            マエストロが心を込めてお仕立ていたします。
+            準備が整いましたらメールでお知らせします。
+          </p>
+        </div>
+        <div className="cq-kintsugi max-w-xs mx-auto" />
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
+          <button
+            onClick={handleReset}
+            className="text-xs tracking-[0.15em] uppercase text-cq-accent hover:text-cq-accent-light transition-colors flex items-center gap-1.5"
+          >
+            もう一度贈る
+            <ChevronRight className="w-3 h-3" />
           </button>
-          <Link href="/" className="cq-btn-secondary">
-            <Home className="w-4 h-4" />
-            DASHBOARD
+          <span className="w-[1px] h-4 bg-cq-border/30 hidden sm:block" />
+          <Link
+            href="/"
+            className="text-xs tracking-[0.15em] uppercase text-cq-text-secondary/50 hover:text-cq-text transition-colors"
+          >
+            ホームに戻る
           </Link>
         </div>
       </div>
@@ -171,24 +168,28 @@ export default function OrderPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      {/* Step Indicator */}
-      <div className="flex items-center justify-center gap-0 mb-10 px-4">
+    <div className="max-w-4xl mx-auto space-y-10">
+      {/* Step Indicator — minimal, text-based */}
+      <div className="flex items-center justify-center gap-0 px-4">
         {STEPS.map((s, i) => (
           <div key={s.id} className="flex items-center">
             <div className="flex items-center gap-2">
-              <div
-                className={`w-8 h-8 rounded-[var(--cq-radius-md)] flex items-center justify-center text-sm font-medium transition-colors ${
+              <span
+                className={`text-[11px] tracking-[0.1em] transition-colors ${
                   step >= s.id
-                    ? "bg-cq-accent text-white"
-                    : "bg-cq-surface border border-cq-border text-cq-text-secondary"
+                    ? "text-cq-text"
+                    : "text-cq-text-secondary/40"
                 }`}
               >
-                {step > s.id ? <Check className="w-4 h-4" /> : s.id}
-              </div>
+                {step > s.id ? (
+                  <Check className="w-3.5 h-3.5 text-cq-accent inline-block" />
+                ) : (
+                  <span className="text-cq-accent/60">{s.id}</span>
+                )}
+              </span>
               <span
-                className={`cq-heading text-sm hidden sm:inline ${
-                  step >= s.id ? "text-cq-text" : "text-cq-text-secondary"
+                className={`text-[11px] tracking-[0.1em] hidden sm:inline ${
+                  step >= s.id ? "text-cq-text" : "text-cq-text-secondary/40"
                 }`}
               >
                 {s.label}
@@ -196,8 +197,8 @@ export default function OrderPage() {
             </div>
             {i < STEPS.length - 1 && (
               <div
-                className={`w-12 sm:w-20 h-px mx-3 ${
-                  step > s.id ? "bg-cq-accent" : "bg-cq-border"
+                className={`w-12 sm:w-20 h-[0.5px] mx-4 ${
+                  step > s.id ? "bg-cq-accent/60" : "bg-cq-border/30"
                 }`}
               />
             )}
@@ -207,68 +208,78 @@ export default function OrderPage() {
 
       {/* Step 1: Scene & Style */}
       {step === 1 && (
-        <div className="space-y-10 cq-flower-bg rounded-[var(--cq-radius-lg)] p-6 md:p-10">
-          {/* Scene Selection */}
-          <div>
-            <h2 className="text-2xl text-cq-text font-light tracking-wide mb-2">
+        <div className="space-y-14">
+          {/* Scene Selection — visual cards */}
+          <section>
+            <p className="text-[10px] tracking-[0.3em] uppercase text-cq-accent/80 mb-2">
+              SCENE
+            </p>
+            <h2 className="cq-heading-display text-2xl text-cq-text font-light tracking-wide mb-3">
               贈る場面をお選びください
             </h2>
-            <p className="text-cq-text-secondary mb-6">
+            <p className="text-xs text-cq-text-secondary/60 mb-8">
               シーンに合わせて最適なスタイルをご提案します
             </p>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {SCENES.map((scene) => {
-                const IconComponent = SCENE_ICONS[scene.icon];
                 const isSelected = selectedScene === scene.id;
+                const imageUrl = SCENE_IMAGES[scene.id] || SCENE_IMAGES.inauguration;
                 return (
                   <button
                     key={scene.id}
                     type="button"
                     onClick={() => {
                       setSelectedScene(scene.id);
-                      setSelectedStyle(null); // Reset style when scene changes
+                      setSelectedStyle(null);
                     }}
-                    className={`flex flex-col items-center gap-3 p-5 rounded-[var(--cq-radius-md)] border transition-all cursor-pointer ${
+                    className={`relative h-[120px] sm:h-[140px] rounded-[var(--cq-radius-md)] overflow-hidden group cursor-pointer transition-all ${
                       isSelected
-                        ? "border-cq-primary bg-cq-primary/5 shadow-sm"
-                        : "border-cq-border bg-cq-surface-raised hover:border-cq-primary/30 hover:shadow-sm"
+                        ? "ring-2 ring-cq-accent ring-offset-2 ring-offset-cq-surface"
+                        : ""
                     }`}
                   >
-                    {IconComponent && (
-                      <IconComponent
-                        className={`w-7 h-7 ${
-                          isSelected ? "text-cq-primary" : "text-cq-text-secondary"
-                        }`}
-                      />
+                    <img
+                      src={imageUrl}
+                      alt={scene.label}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className={`absolute inset-0 transition-colors ${
+                      isSelected ? "bg-black/20" : "bg-black/30 group-hover:bg-black/40"
+                    }`} />
+                    <div className="relative flex flex-col justify-end h-full p-4">
+                      <p className="text-sm text-white font-medium drop-shadow-md">
+                        {scene.label}
+                      </p>
+                    </div>
+                    {isSelected && (
+                      <div className="absolute top-2.5 right-2.5 w-6 h-6 bg-cq-accent rounded-[var(--cq-radius-sm)] flex items-center justify-center">
+                        <Check className="w-3.5 h-3.5 text-white" />
+                      </div>
                     )}
-                    <span
-                      className={`text-sm font-medium ${
-                        isSelected ? "text-cq-primary" : "text-cq-text"
-                      }`}
-                    >
-                      {scene.label}
-                    </span>
                   </button>
                 );
               })}
             </div>
-          </div>
+          </section>
 
-          {/* Style Selection (appears after scene) */}
+          {/* Style Selection */}
           {selectedScene && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
-              <h3 className="text-lg text-cq-text font-light tracking-wide mb-4">
+            <section className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+              <p className="text-[10px] tracking-[0.3em] uppercase text-cq-accent/80 mb-2">
+                STYLE
+              </p>
+              <h3 className="cq-heading-display text-xl text-cq-text font-light tracking-wide mb-8">
                 スタイルを選ぶ
               </h3>
 
               {/* Recommended styles */}
               {recommendedStyles.length > 0 && (
-                <div className="mb-4">
-                  <p className="text-xs text-cq-accent font-medium mb-3 tracking-wide">
+                <div className="mb-8">
+                  <p className="text-[10px] tracking-[0.15em] uppercase text-cq-accent/60 mb-4">
                     おすすめスタイル
                   </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {recommendedStyles.map((style) => (
                       <StyleCard
                         key={style.id}
@@ -284,10 +295,10 @@ export default function OrderPage() {
               {/* Other styles */}
               {otherStyles.length > 0 && (
                 <div>
-                  <p className="text-xs text-cq-text-secondary font-medium mb-3 tracking-wide">
+                  <p className="text-[10px] tracking-[0.15em] uppercase text-cq-text-secondary/40 mb-4">
                     その他のスタイル
                   </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {otherStyles.map((style) => (
                       <StyleCard
                         key={style.id}
@@ -302,20 +313,23 @@ export default function OrderPage() {
 
               {/* Budget selector */}
               {selectedStyle && (
-                <div className="mt-8 animate-in fade-in duration-200">
-                  <h3 className="text-lg text-cq-text font-light tracking-wide mb-4">
+                <div className="mt-14 animate-in fade-in duration-200">
+                  <p className="text-[10px] tracking-[0.3em] uppercase text-cq-accent/80 mb-2">
+                    BUDGET
+                  </p>
+                  <h3 className="cq-heading-display text-xl text-cq-text font-light tracking-wide mb-8">
                     ご予算
                   </h3>
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap gap-4">
                     {BUDGET_RANGES.map((budget) => (
                       <button
                         key={budget.id}
                         type="button"
                         onClick={() => setSelectedBudget(budget.id)}
-                        className={`px-5 py-2.5 rounded-[var(--cq-radius-md)] text-sm font-medium border transition-all cursor-pointer ${
+                        className={`px-6 py-3 text-sm font-light tracking-wide border transition-all cursor-pointer rounded-[var(--cq-radius-md)] ${
                           selectedBudget === budget.id
-                            ? "bg-cq-accent text-white border-cq-accent"
-                            : "bg-cq-surface-raised border-cq-border text-cq-text hover:border-cq-accent/40"
+                            ? "border-cq-accent text-cq-accent bg-cq-accent/5"
+                            : "border-cq-border/30 text-cq-text-secondary hover:border-cq-accent/30 hover:text-cq-text"
                         }`}
                       >
                         {budget.label}
@@ -324,7 +338,7 @@ export default function OrderPage() {
                   </div>
                 </div>
               )}
-            </div>
+            </section>
           )}
 
           {/* Next button */}
@@ -333,10 +347,10 @@ export default function OrderPage() {
               type="button"
               disabled={!canProceedStep1}
               onClick={() => setStep(2)}
-              className="cq-btn-primary disabled:opacity-40 disabled:cursor-not-allowed"
+              className="text-xs tracking-[0.15em] uppercase text-cq-accent hover:text-cq-accent-light transition-colors flex items-center gap-1.5 disabled:opacity-30 disabled:cursor-not-allowed"
             >
-              NEXT
-              <ChevronRight className="w-4 h-4" />
+              次へ
+              <ChevronRight className="w-3 h-3" />
             </button>
           </div>
         </div>
@@ -344,109 +358,92 @@ export default function OrderPage() {
 
       {/* Step 2: Maestro */}
       {step === 2 && (
-        <div className="space-y-8 cq-flower-bg rounded-[var(--cq-radius-lg)] p-6 md:p-10">
-          <div>
-            <h2 className="text-2xl text-cq-text font-light tracking-wide mb-2">
+        <div className="space-y-14">
+          <section>
+            <p className="text-[10px] tracking-[0.3em] uppercase text-cq-accent/80 mb-2">
+              MAESTRO
+            </p>
+            <h2 className="cq-heading-display text-2xl text-cq-text font-light tracking-wide mb-3">
               あなたの花を仕立てるマエストロ
             </h2>
-            <p className="text-cq-text-secondary">
+            <p className="text-xs text-cq-text-secondary/60 mb-10">
               選ばれた職人が、一つひとつ心を込めてお作りします
             </p>
-          </div>
 
-          <div className="space-y-4">
-            {MAESTROS.map((maestro) => {
-              const isSelected = selectedMaestro?.id === maestro.id;
-              return (
-                <button
-                  key={maestro.id}
-                  type="button"
-                  onClick={() => setSelectedMaestro(maestro)}
-                  className={`w-full text-left p-6 rounded-[var(--cq-radius-lg)] border-2 transition-all cursor-pointer ${
-                    isSelected
-                      ? "border-cq-accent bg-cq-accent/5 shadow-md ring-1 ring-cq-accent/20"
-                      : "border-cq-border bg-cq-surface-raised hover:border-cq-accent/30 hover:shadow-sm"
-                  }`}
-                >
-                  <div className="flex flex-col sm:flex-row items-start gap-4">
-                    {/* Maestro info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="cq-heading-display text-xl text-cq-text">
-                          {maestro.stageName}
-                        </h3>
-                        <span
-                          className={`px-2.5 py-0.5 text-[11px] font-bold tracking-wider rounded-[var(--cq-radius-sm)] ${RANK_STYLES[maestro.rank]}`}
-                        >
-                          {maestro.rank}
-                        </span>
-                        {isSelected && (
-                          <div className="w-6 h-6 bg-cq-accent rounded-[var(--cq-radius-sm)] flex items-center justify-center ml-auto sm:ml-0">
-                            <Check className="w-3.5 h-3.5 text-white" />
-                          </div>
-                        )}
-                      </div>
-                      <p className="text-sm text-cq-text-secondary leading-relaxed mb-3">
-                        {maestro.description}
-                      </p>
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-cq-text-secondary">
-                        <span>
-                          完遂率{" "}
-                          <span className="font-medium text-cq-text">
-                            {maestro.perfectionRate}%
-                          </span>
-                        </span>
-                        <span>
-                          実績{" "}
-                          <span className="font-medium text-cq-text">
-                            {maestro.totalWorks}件
-                          </span>
-                        </span>
-                        <span>拠点: {maestro.location}</span>
-                      </div>
-                    </div>
-
-                    {/* Nomination fee */}
-                    <div className="shrink-0 text-right sm:text-left">
-                      {maestro.nominationFee > 0 ? (
-                        <div>
-                          <p className="text-xs text-cq-text-secondary">
-                            指名料
-                          </p>
-                          <p className="cq-heading text-lg text-cq-accent">
-                            &yen;{maestro.nominationFee.toLocaleString()}
-                          </p>
+            <div className="space-y-6">
+              {MAESTROS.map((maestro) => {
+                const isSelected = selectedMaestro?.id === maestro.id;
+                return (
+                  <button
+                    key={maestro.id}
+                    type="button"
+                    onClick={() => setSelectedMaestro(maestro)}
+                    className={`w-full text-left transition-all cursor-pointer ${
+                      isSelected
+                        ? "bg-cq-accent/[0.03]"
+                        : "hover:bg-cq-surface-raised/50"
+                    } py-8 -mx-4 px-4 rounded-[var(--cq-radius-md)]`}
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 md:gap-8 items-start">
+                      <div>
+                        <div className="flex items-center gap-3">
+                          <h3 className="cq-heading-display text-2xl text-cq-text tracking-wide">
+                            {maestro.stageName}
+                          </h3>
+                          {isSelected && (
+                            <Check className="w-4 h-4 text-cq-accent" />
+                          )}
                         </div>
-                      ) : (
-                        <span className="text-xs font-medium text-cq-success bg-cq-success/8 px-3 py-1 rounded-[var(--cq-radius-sm)] border border-cq-success/20">
-                          指名料無料
-                        </span>
-                      )}
+                        <p className="text-[10px] tracking-[0.15em] uppercase text-cq-text-secondary/50 mt-1">
+                          {maestro.location}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-cq-text-secondary leading-relaxed mb-4">
+                          {maestro.description}
+                        </p>
+                        <div className="flex items-center gap-6">
+                          <span className="text-[10px] text-cq-text-secondary/40">
+                            {maestro.specialties.join(" / ")}
+                          </span>
+                          {maestro.nominationFee > 0 ? (
+                            <span className="text-xs text-cq-text-secondary/50">
+                              指名料 <span className="text-cq-accent font-light">&yen;{maestro.nominationFee.toLocaleString()}</span>
+                            </span>
+                          ) : (
+                            <span className="text-xs text-cq-text-secondary/50">
+                              指名料無料
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+                    {/* Kintsugi divider between items */}
+                    <div className="cq-kintsugi mt-8" />
+                  </button>
+                );
+              })}
+            </div>
+          </section>
 
           {/* Navigation */}
           <div className="flex justify-between pt-4">
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="cq-btn-secondary"
+              className="text-xs tracking-[0.15em] uppercase text-cq-text-secondary/50 hover:text-cq-text transition-colors flex items-center gap-1.5"
             >
-              <ChevronLeft className="w-4 h-4" />
-              BACK
+              <ChevronLeft className="w-3 h-3" />
+              戻る
             </button>
             <button
               type="button"
               disabled={!canProceedStep2}
               onClick={() => setStep(3)}
-              className="cq-btn-primary disabled:opacity-40 disabled:cursor-not-allowed"
+              className="text-xs tracking-[0.15em] uppercase text-cq-accent hover:text-cq-accent-light transition-colors flex items-center gap-1.5 disabled:opacity-30 disabled:cursor-not-allowed"
             >
-              NEXT
-              <ChevronRight className="w-4 h-4" />
+              次へ
+              <ChevronRight className="w-3 h-3" />
             </button>
           </div>
         </div>
@@ -454,13 +451,18 @@ export default function OrderPage() {
 
       {/* Step 3: Delivery + Confirm */}
       {step === 3 && (
-        <div className="cq-flower-bg rounded-[var(--cq-radius-lg)] p-6 md:p-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="space-y-14">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-14">
             {/* Left: Delivery Form */}
-            <div className="space-y-6">
-              <h2 className="text-2xl text-cq-text font-light tracking-wide">お届け先</h2>
+            <section>
+              <p className="text-[10px] tracking-[0.3em] uppercase text-cq-accent/80 mb-2">
+                DELIVERY
+              </p>
+              <h2 className="cq-heading-display text-2xl text-cq-text font-light tracking-wide mb-8">
+                お届け先
+              </h2>
 
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <FormField
                   label="会社名"
                   value={form.companyName}
@@ -493,7 +495,7 @@ export default function OrderPage() {
                   type="date"
                 />
                 <div>
-                  <label className="block text-sm font-medium text-cq-text mb-1.5">
+                  <label className="block text-[11px] tracking-[0.1em] text-cq-text-secondary/60 mb-2">
                     メッセージカード
                   </label>
                   <textarea
@@ -502,21 +504,24 @@ export default function OrderPage() {
                     placeholder="心を込めたメッセージをどうぞ..."
                     maxLength={200}
                     rows={4}
-                    className="w-full px-4 py-3 border border-cq-border rounded-[var(--cq-radius-md)] bg-cq-surface-raised text-cq-text text-sm placeholder:text-cq-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-cq-accent/30 focus:border-cq-accent resize-none transition-colors"
+                    className="w-full px-4 py-3 border border-cq-border/30 rounded-[var(--cq-radius-md)] bg-transparent text-cq-text text-sm placeholder:text-cq-text-secondary/30 focus:outline-none focus:border-cq-accent/40 resize-none transition-colors"
                   />
-                  <p className="text-xs text-cq-text-secondary text-right mt-1">
+                  <p className="text-[10px] text-cq-text-secondary/30 text-right mt-1">
                     {form.message.length}/200
                   </p>
                 </div>
               </div>
-            </div>
+            </section>
 
             {/* Right: Order Summary */}
-            <div>
-              <h2 className="text-2xl text-cq-text font-light tracking-wide mb-6">
+            <section>
+              <p className="text-[10px] tracking-[0.3em] uppercase text-cq-accent/80 mb-2">
+                SUMMARY
+              </p>
+              <h2 className="cq-heading-display text-2xl text-cq-text font-light tracking-wide mb-8">
                 ご注文内容
               </h2>
-              <div className="bg-cq-surface-raised rounded-[var(--cq-radius-lg)] border border-cq-border p-6 space-y-4">
+              <div className="space-y-5">
                 <SummaryRow
                   label="シーン"
                   value={
@@ -543,23 +548,25 @@ export default function OrderPage() {
                   <SummaryRow label="お届け日" value={form.deliveryDate} />
                 )}
 
-                <div className="border-t border-cq-border pt-4 space-y-2">
+                <div className="cq-kintsugi" />
+
+                <div className="space-y-3 pt-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-cq-text-secondary">商品代金</span>
-                    <span className="text-cq-text">
+                    <span className="text-cq-text-secondary/60">商品代金</span>
+                    <span className="text-cq-text font-light">
                       &yen;{basePrice.toLocaleString()}〜
                     </span>
                   </div>
                   {nominationFee > 0 && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-cq-text-secondary">指名料</span>
-                      <span className="text-cq-text">
+                      <span className="text-cq-text-secondary/60">指名料</span>
+                      <span className="text-cq-text font-light">
                         &yen;{nominationFee.toLocaleString()}
                       </span>
                     </div>
                   )}
-                  <div className="flex justify-between items-baseline pt-3 border-t border-cq-border-subtle">
-                    <span className="text-sm text-cq-text-secondary">
+                  <div className="flex justify-between items-baseline pt-4">
+                    <span className="text-[11px] tracking-[0.1em] text-cq-text-secondary/50">
                       合計（税込）
                     </span>
                     <span className="text-2xl font-light text-cq-accent tracking-wide">
@@ -572,15 +579,15 @@ export default function OrderPage() {
                   type="button"
                   disabled={isSubmitting}
                   onClick={handleSubmit}
-                  className="cq-btn-primary w-full justify-center mt-4 disabled:opacity-60"
+                  className="w-full mt-6 py-4 text-xs tracking-[0.2em] uppercase text-center border border-cq-accent text-cq-accent hover:bg-cq-accent hover:text-white transition-all rounded-[var(--cq-radius-md)] disabled:opacity-40"
                 >
                   {isSubmitting ? (
-                    <>
+                    <span className="flex items-center justify-center gap-2">
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      PROCESSING...
-                    </>
+                      お仕立ての準備をしています...
+                    </span>
                   ) : (
-                    "CONFIRM ORDER"
+                    "ご注文を確定する"
                   )}
                 </button>
               </div>
@@ -589,12 +596,12 @@ export default function OrderPage() {
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="flex items-center gap-2 mt-4 text-sm text-cq-text-secondary hover:text-cq-text transition-colors cursor-pointer"
+                className="flex items-center gap-2 mt-6 text-xs text-cq-text-secondary/50 hover:text-cq-text transition-colors cursor-pointer"
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="w-3 h-3" />
                 マエストロ選択に戻る
               </button>
-            </div>
+            </section>
           </div>
         </div>
       )}
@@ -617,47 +624,39 @@ function StyleCard({
     <button
       type="button"
       onClick={onSelect}
-      className={`group relative overflow-hidden rounded-[var(--cq-radius-lg)] border-2 transition-all text-left cursor-pointer ${
+      className={`group relative overflow-hidden rounded-[var(--cq-radius-md)] transition-all text-left cursor-pointer ${
         isSelected
-          ? "border-cq-accent shadow-lg ring-2 ring-cq-accent/20"
-          : "border-cq-border hover:border-cq-accent/40 hover:shadow-md"
+          ? "ring-2 ring-cq-accent ring-offset-2 ring-offset-cq-surface"
+          : "hover:opacity-90"
       }`}
     >
-      {/* Flower Image */}
-      <div className="relative h-36 sm:h-40 overflow-hidden">
+      <div className="relative h-36 sm:h-44 overflow-hidden">
         <img
           src={style.imageUrl}
           alt={style.imageAlt}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-
-        {/* Style name on image */}
-        <div className="absolute bottom-0 left-0 right-0 p-3">
+        <div className="absolute bottom-0 left-0 right-0 p-4">
           <div className="flex items-center gap-2">
-            <span className="cq-brand-text text-base text-white drop-shadow-md">
+            <span className="cq-heading-display text-base text-white tracking-wide drop-shadow-md">
               {style.name}
             </span>
             {style.tier === "NOMINATION" && (
-              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-cq-accent/90 text-cq-primary rounded-[var(--cq-radius-sm)] tracking-wider">
+              <span className="text-[9px] tracking-[0.1em] uppercase text-white/60">
                 指名限定
               </span>
             )}
           </div>
         </div>
-
-        {/* Selected checkmark */}
         {isSelected && (
-          <div className="absolute top-2.5 right-2.5 w-7 h-7 bg-cq-accent rounded-[var(--cq-radius-sm)] flex items-center justify-center shadow-lg">
-            <Check className="w-4 h-4 text-white" />
+          <div className="absolute top-3 right-3 w-6 h-6 bg-cq-accent rounded-[var(--cq-radius-sm)] flex items-center justify-center">
+            <Check className="w-3.5 h-3.5 text-white" />
           </div>
         )}
       </div>
-
-      {/* Description */}
-      <div className="p-3 bg-cq-surface-raised">
-        <p className="text-xs text-cq-text-secondary leading-relaxed line-clamp-2">
+      <div className="py-3">
+        <p className="text-xs text-cq-text-secondary/60 leading-relaxed line-clamp-2">
           {style.description}
         </p>
       </div>
@@ -682,7 +681,7 @@ function FormField({
 }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-cq-text mb-1.5">
+      <label className="block text-[11px] tracking-[0.1em] text-cq-text-secondary/60 mb-2">
         {label}
       </label>
       <input
@@ -691,7 +690,7 @@ function FormField({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         maxLength={maxLength}
-        className="w-full px-4 py-3 border border-cq-border rounded-[var(--cq-radius-md)] bg-cq-surface-raised text-cq-text text-sm placeholder:text-cq-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-cq-accent/30 focus:border-cq-accent transition-colors"
+        className="w-full px-4 py-3 border border-cq-border/30 rounded-[var(--cq-radius-md)] bg-transparent text-cq-text text-sm placeholder:text-cq-text-secondary/30 focus:outline-none focus:border-cq-accent/40 transition-colors"
       />
     </div>
   );
@@ -709,8 +708,8 @@ function SummaryRow({
   isDisplay?: boolean;
 }) {
   return (
-    <div className="flex justify-between items-baseline">
-      <span className="text-sm text-cq-text-secondary">{label}</span>
+    <div className="flex justify-between items-baseline py-2 border-b border-cq-border/10">
+      <span className="text-[11px] tracking-[0.1em] text-cq-text-secondary/50">{label}</span>
       <span
         className={`text-sm text-cq-text ${isBrand ? "cq-brand-text" : ""} ${isDisplay ? "cq-heading-display" : ""}`}
       >

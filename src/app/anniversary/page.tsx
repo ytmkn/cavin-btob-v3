@@ -66,33 +66,42 @@ export default function AnniversaryPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-6xl mx-auto space-y-14">
       {/* Header */}
-      <div>
-        <h1 className="cq-heading text-2xl text-cq-text">記念日管理</h1>
-        <p className="mt-1 text-sm text-cq-text-secondary">大切な方のお祝いを、忘れずに</p>
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <p className="text-[10px] tracking-[0.3em] uppercase text-cq-accent/80 mb-2">
+            ANNIVERSARY
+          </p>
+          <h1 className="cq-heading-display text-2xl text-cq-text font-light tracking-wide">
+            記念日管理
+          </h1>
+          <p className="mt-2 text-xs text-cq-text-secondary/60 font-light">
+            大切な方のお祝いを、忘れずに
+          </p>
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-4">
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="text-xs text-cq-text-secondary/50 hover:text-cq-text transition-colors flex items-center gap-1.5"
+          >
+            <Upload className="w-3 h-3" />
+            CSVアップロード
+          </button>
+          <input ref={fileInputRef} type="file" accept=".csv" className="hidden" onChange={handleCsvUpload} />
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="text-xs text-cq-accent hover:text-cq-accent-light transition-colors flex items-center gap-1.5"
+          >
+            <Plus className="w-3 h-3" />
+            社員を追加
+          </button>
+        </div>
       </div>
 
-      {/* Actions */}
-      <div className="flex flex-wrap gap-3">
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium border border-cq-border text-cq-text rounded-[var(--cq-radius-md)] hover:bg-cq-surface transition-colors"
-        >
-          <Upload className="w-4 h-4" />
-          CSVアップロード
-        </button>
-        <input ref={fileInputRef} type="file" accept=".csv" className="hidden" onChange={handleCsvUpload} />
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium bg-cq-primary text-white rounded-[var(--cq-radius-md)] hover:bg-cq-primary-light transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          社員を追加
-        </button>
-      </div>
-
-      {/* Employee Cards */}
+      {/* Employee List */}
       {employees.length === 0 ? (
         <EmptyState
           icon={Gift}
@@ -100,44 +109,36 @@ export default function AnniversaryPage() {
           description="CSVアップロードまたは手動で社員情報を追加してください。"
         />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="space-y-1">
           {employees.map((emp) => (
             <div
               key={emp.id}
-              className="bg-cq-surface-raised border border-cq-border rounded-[var(--cq-radius-lg)] p-5 shadow-sm hover:shadow-md transition-shadow"
+              className="flex flex-col sm:flex-row items-start sm:items-center gap-3 py-5 border-b border-cq-border/15 last:border-0"
             >
-              <div className="flex items-start gap-3.5">
-                {/* Avatar */}
-                <div className="w-10 h-10 rounded-full bg-cq-primary flex items-center justify-center shrink-0">
-                  <span className="text-white text-sm font-medium">
-                    {emp.name.charAt(0)}
-                  </span>
-                </div>
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <span className="text-[11px] text-cq-accent/60 shrink-0">
+                  {emp.name.charAt(0)}
+                </span>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-cq-text truncate">{emp.name}</p>
-                  <p className="text-xs text-cq-text-secondary">{emp.department}</p>
+                  <p className="text-sm text-cq-text">{emp.name}</p>
+                  <p className="text-xs text-cq-text-secondary/40 mt-0.5">{emp.department}</p>
                 </div>
               </div>
 
-              <div className="mt-4 space-y-2">
-                {/* Birthday */}
-                <div className="flex items-center gap-2 text-sm text-cq-text">
-                  <Cake className="w-4 h-4 text-cq-accent" />
-                  <span>{parseInt(emp.birthday.split("-")[0])}月{parseInt(emp.birthday.split("-")[1])}日</span>
-                </div>
+              <div className="flex items-center gap-6 shrink-0">
+                <span className="flex items-center gap-1.5 text-xs text-cq-text-secondary/50">
+                  <Cake className="w-3 h-3 text-cq-accent/40" />
+                  {parseInt(emp.birthday.split("-")[0])}月{parseInt(emp.birthday.split("-")[1])}日
+                </span>
 
-                {/* Auto order status */}
                 {emp.autoOrder ? (
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 text-xs font-medium bg-cq-success/10 text-cq-success rounded-full">
-                      自動注文 ON
-                    </span>
-                    <span className="text-xs text-cq-text-secondary">
-                      {emp.stylePref} / ¥{emp.budget?.toLocaleString("ja-JP")}
-                    </span>
-                  </div>
+                  <span className="text-[11px] text-cq-text-secondary/50">
+                    自動手配 — {emp.stylePref} / &yen;{emp.budget?.toLocaleString("ja-JP")}
+                  </span>
                 ) : (
-                  <p className="text-xs text-cq-text-secondary/60">自動注文 OFF</p>
+                  <span className="text-[11px] text-cq-text-secondary/30">
+                    手動
+                  </span>
                 )}
               </div>
             </div>
@@ -145,33 +146,45 @@ export default function AnniversaryPage() {
         </div>
       )}
 
+      {/* Kintsugi divider */}
+      <div className="cq-kintsugi" />
+
       {/* Calendar Section */}
-      <div className="space-y-4">
-        <h2 className="cq-heading text-xl text-cq-text">年間スケジュール</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+      <section>
+        <p className="text-[10px] tracking-[0.3em] uppercase text-cq-accent/80 mb-2">
+          ANNUAL SCHEDULE
+        </p>
+        <h2 className="cq-heading-display text-xl text-cq-text font-light tracking-wide mb-10">
+          年間スケジュール
+        </h2>
+        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-6">
           {calendarData.map((month, idx) => (
             <div
               key={month.name}
-              className={`bg-cq-surface-raised border border-cq-border rounded-[var(--cq-radius-md)] p-4 ${
-                idx === currentMonth ? "border-l-4 border-l-cq-primary bg-cq-primary/[0.02]" : ""
+              className={`py-4 ${
+                idx === currentMonth ? "border-l border-l-cq-accent/40 pl-4" : ""
               }`}
             >
-              <p className="font-medium text-sm text-cq-text mb-2">{month.name}</p>
+              <p className={`text-[11px] tracking-[0.1em] mb-3 ${
+                idx === currentMonth ? "text-cq-accent" : "text-cq-text-secondary/50"
+              }`}>
+                {month.name}
+              </p>
               {month.emps.length > 0 ? (
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                   {month.emps.map((e) => (
-                    <p key={e.id} className="text-xs text-cq-text-secondary">
-                      {e.name} — {parseInt(e.birthday.split("-")[1])}日
+                    <p key={e.id} className="text-xs text-cq-text-secondary/60">
+                      {e.name}
                     </p>
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-cq-text-secondary/40">—</p>
+                <p className="text-xs text-cq-text-secondary/20">&mdash;</p>
               )}
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
       {/* Add Employee Modal */}
       {showAddModal && <AddEmployeeModal onClose={() => setShowAddModal(false)} onAdd={(emp) => {
@@ -183,28 +196,28 @@ export default function AnniversaryPage() {
       {showCsvPreview && (
         <ModalBackdrop onClose={() => setShowCsvPreview(false)}>
           <div className="relative w-full max-w-md bg-cq-surface-raised rounded-[var(--cq-radius-lg)] shadow-xl overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-5 border-b border-cq-border">
-              <h2 className="cq-heading text-lg text-cq-text">CSVプレビュー</h2>
-              <button onClick={() => setShowCsvPreview(false)} className="p-1.5 text-cq-text-secondary hover:text-cq-text rounded-md transition-colors">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-cq-border/20">
+              <h2 className="cq-heading-display text-lg text-cq-text font-light tracking-wide">CSVプレビュー</h2>
+              <button onClick={() => setShowCsvPreview(false)} className="p-1.5 text-cq-text-secondary/40 hover:text-cq-text rounded-md transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="px-6 py-4 max-h-[50vh] overflow-y-auto space-y-2">
               {csvData.map((d, i) => (
-                <div key={i} className="flex items-center gap-3 text-sm text-cq-text py-2 border-b border-cq-border-subtle">
-                  <User className="w-4 h-4 text-cq-text-secondary" />
-                  <span className="font-medium">{d.name}</span>
-                  <span className="text-cq-text-secondary">{d.department}</span>
-                  <span className="text-cq-text-secondary ml-auto">{d.birthday}</span>
+                <div key={i} className="flex items-center gap-3 text-sm text-cq-text py-2 border-b border-cq-border/10">
+                  <User className="w-3 h-3 text-cq-text-secondary/40" />
+                  <span>{d.name}</span>
+                  <span className="text-cq-text-secondary/50">{d.department}</span>
+                  <span className="text-cq-text-secondary/40 ml-auto">{d.birthday}</span>
                 </div>
               ))}
-              {csvData.length === 0 && <p className="text-sm text-cq-text-secondary">データがありません</p>}
+              {csvData.length === 0 && <p className="text-sm text-cq-text-secondary/50">データがありません</p>}
             </div>
-            <div className="px-6 py-4 border-t border-cq-border flex gap-3 justify-end">
-              <button onClick={() => setShowCsvPreview(false)} className="px-4 py-2 text-sm text-cq-text-secondary border border-cq-border rounded-[var(--cq-radius-md)] hover:bg-cq-surface transition-colors">
+            <div className="px-6 py-4 border-t border-cq-border/20 flex gap-4 justify-end">
+              <button onClick={() => setShowCsvPreview(false)} className="text-xs text-cq-text-secondary/50 hover:text-cq-text transition-colors">
                 キャンセル
               </button>
-              <button onClick={confirmCsvImport} className="px-4 py-2 text-sm font-medium text-white bg-cq-primary rounded-[var(--cq-radius-md)] hover:bg-cq-primary-light transition-colors">
+              <button onClick={confirmCsvImport} className="text-xs text-cq-accent hover:text-cq-accent-light transition-colors">
                 {csvData.length}件を追加
               </button>
             </div>
@@ -220,7 +233,7 @@ export default function AnniversaryPage() {
 function ModalBackdrop({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       {children}
     </div>
   );
@@ -250,13 +263,13 @@ function AddEmployeeModal({ onClose, onAdd }: { onClose: () => void; onAdd: (emp
   return (
     <ModalBackdrop onClose={onClose}>
       <div className="relative w-full max-w-md bg-cq-surface-raised rounded-[var(--cq-radius-lg)] shadow-xl overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-5 border-b border-cq-border">
-          <h2 className="cq-heading text-lg text-cq-text">社員を追加</h2>
-          <button onClick={onClose} className="p-1.5 text-cq-text-secondary hover:text-cq-text rounded-md transition-colors">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-cq-border/20">
+          <h2 className="cq-heading-display text-lg text-cq-text font-light tracking-wide">社員を追加</h2>
+          <button onClick={onClose} className="p-1.5 text-cq-text-secondary/40 hover:text-cq-text rounded-md transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
+        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-5">
           <FormField label="名前">
             <input value={name} onChange={(e) => setName(e.target.value)} required className="form-input" placeholder="山田 太郎" />
           </FormField>
@@ -270,14 +283,14 @@ function AddEmployeeModal({ onClose, onAdd }: { onClose: () => void; onAdd: (emp
             <button
               type="button"
               onClick={() => setAutoOrder(!autoOrder)}
-              className={`relative w-11 h-6 rounded-full transition-colors ${autoOrder ? "bg-cq-success" : "bg-cq-border"}`}
+              className={`relative w-11 h-6 rounded-full transition-colors ${autoOrder ? "bg-cq-accent" : "bg-cq-border/50"}`}
             >
               <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${autoOrder ? "translate-x-5" : ""}`} />
             </button>
-            <span className="text-sm text-cq-text">自動注文</span>
+            <span className="text-xs text-cq-text-secondary/60">自動注文</span>
           </div>
           {autoOrder && (
-            <div className="space-y-4 pl-4 border-l-2 border-cq-primary/20">
+            <div className="space-y-4 pl-4 border-l border-cq-accent/20">
               <FormField label="スタイル">
                 <select value={stylePref} onChange={(e) => setStylePref(e.target.value)} className="form-input">
                   {STYLES.map((s) => (
@@ -290,11 +303,11 @@ function AddEmployeeModal({ onClose, onAdd }: { onClose: () => void; onAdd: (emp
               </FormField>
             </div>
           )}
-          <div className="flex gap-3 justify-end pt-2">
-            <button type="button" onClick={onClose} className="px-4 py-2 text-sm text-cq-text-secondary border border-cq-border rounded-[var(--cq-radius-md)] hover:bg-cq-surface transition-colors">
+          <div className="flex gap-4 justify-end pt-4">
+            <button type="button" onClick={onClose} className="text-xs text-cq-text-secondary/50 hover:text-cq-text transition-colors">
               キャンセル
             </button>
-            <button type="submit" className="px-4 py-2 text-sm font-medium text-white bg-cq-primary rounded-[var(--cq-radius-md)] hover:bg-cq-primary-light transition-colors">
+            <button type="submit" className="text-xs text-cq-accent hover:text-cq-accent-light transition-colors">
               追加する
             </button>
           </div>
@@ -307,7 +320,7 @@ function AddEmployeeModal({ onClose, onAdd }: { onClose: () => void; onAdd: (emp
 function FormField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="text-sm text-cq-text-secondary mb-1 block">{label}</span>
+      <span className="text-[11px] tracking-[0.1em] text-cq-text-secondary/60 mb-1.5 block">{label}</span>
       {children}
     </label>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ArrowUpDown, ArrowUp, ArrowDown, Download, Search } from "lucide-react";
+import { Download, Search } from "lucide-react";
 import { MOCK_ORDERS, SCENES } from "@/lib/mock-data";
 import type { Order } from "@/lib/mock-data";
 import { exportOrdersToCSV } from "@/lib/csv-utils";
@@ -17,17 +17,10 @@ const STATUS_TABS = [
 ] as const;
 
 const STATUS_LABELS: Record<string, string> = {
-  preparing: "準備中",
+  preparing: "お仕立て中",
   in_transit: "配送中",
-  delivered: "配達済み",
+  delivered: "お届け済み",
   completed: "完了",
-};
-
-const STATUS_COLORS: Record<string, string> = {
-  preparing: "bg-cq-warning/10 text-cq-warning",
-  in_transit: "bg-cq-primary/10 text-cq-primary",
-  delivered: "bg-cq-accent/10 text-cq-accent",
-  completed: "bg-cq-success/10 text-cq-success",
 };
 
 type SortKey = "orderedAt" | "totalAmount";
@@ -69,44 +62,45 @@ export default function HistoryPage() {
     }
   }
 
-  function SortIcon({ column }: { column: SortKey }) {
-    if (sortKey !== column) return <ArrowUpDown className="w-3.5 h-3.5 opacity-40" />;
-    return sortDir === "asc" ? (
-      <ArrowUp className="w-3.5 h-3.5" />
-    ) : (
-      <ArrowDown className="w-3.5 h-3.5" />
-    );
-  }
-
   return (
-    <div className="space-y-6">
+    <div className="max-w-6xl mx-auto space-y-10">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h1 className="cq-heading text-2xl text-cq-text">ご注文履歴</h1>
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <p className="text-[10px] tracking-[0.3em] uppercase text-cq-accent/80 mb-2">
+            ORDER HISTORY
+          </p>
+          <h1 className="cq-heading-display text-2xl text-cq-text font-light tracking-wide">
+            ご注文履歴
+          </h1>
+        </div>
         <button
           onClick={() => exportOrdersToCSV(filtered)}
-          className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium border border-cq-border text-cq-text rounded-[var(--cq-radius-md)] hover:bg-cq-surface transition-colors"
+          className="text-xs text-cq-text-secondary/50 hover:text-cq-text transition-colors flex items-center gap-1.5"
         >
-          <Download className="w-4 h-4" />
+          <Download className="w-3 h-3" />
           CSV出力
         </button>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-6">
         {/* Status Tabs */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex gap-6">
           {STATUS_TABS.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setStatusFilter(tab.key)}
-              className={`px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
+              className={`relative pb-2 text-[11px] tracking-[0.1em] transition-colors ${
                 statusFilter === tab.key
-                  ? "bg-cq-primary text-white"
-                  : "bg-cq-surface text-cq-text-secondary hover:text-cq-text"
+                  ? "text-cq-text"
+                  : "text-cq-text-secondary/50 hover:text-cq-text-secondary"
               }`}
             >
               {tab.label}
+              {statusFilter === tab.key && (
+                <span className="absolute bottom-0 left-0 right-0 h-[0.5px] bg-cq-accent" />
+              )}
             </button>
           ))}
         </div>
@@ -115,7 +109,7 @@ export default function HistoryPage() {
         <select
           value={sceneFilter}
           onChange={(e) => setSceneFilter(e.target.value)}
-          className="px-3 py-1.5 text-sm border border-cq-border rounded-[var(--cq-radius-md)] bg-cq-surface-raised text-cq-text focus:outline-none focus:ring-2 focus:ring-cq-primary/20"
+          className="px-3 py-1.5 text-xs border border-cq-border/30 rounded-[var(--cq-radius-md)] bg-transparent text-cq-text-secondary focus:outline-none focus:border-cq-accent/40"
         >
           <option value="all">すべてのシーン</option>
           {SCENES.map((s) => (
@@ -124,12 +118,28 @@ export default function HistoryPage() {
             </option>
           ))}
         </select>
+
+        {/* Sort */}
+        <div className="flex gap-4 text-[11px] text-cq-text-secondary/50">
+          <button
+            onClick={() => handleSort("orderedAt")}
+            className={`hover:text-cq-text transition-colors ${sortKey === "orderedAt" ? "text-cq-text" : ""}`}
+          >
+            日付順 {sortKey === "orderedAt" && (sortDir === "desc" ? "↓" : "↑")}
+          </button>
+          <button
+            onClick={() => handleSort("totalAmount")}
+            className={`hover:text-cq-text transition-colors ${sortKey === "totalAmount" ? "text-cq-text" : ""}`}
+          >
+            金額順 {sortKey === "totalAmount" && (sortDir === "desc" ? "↓" : "↑")}
+          </button>
+        </div>
       </div>
 
       {/* Count */}
-      <p className="text-sm text-cq-text-secondary">{filtered.length} 件表示</p>
+      <p className="text-[11px] text-cq-text-secondary/40">{filtered.length} 件</p>
 
-      {/* Table */}
+      {/* Order Cards */}
       {filtered.length === 0 ? (
         <EmptyState
           icon={Search}
@@ -137,53 +147,50 @@ export default function HistoryPage() {
           description="フィルター条件を変更してお試しください。"
         />
       ) : (
-        <div className="bg-cq-surface-raised border border-cq-border rounded-[var(--cq-radius-lg)] overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-cq-primary/5">
-                  <th className="text-left px-4 py-3 font-medium text-cq-text-secondary text-xs tracking-wide">注文番号</th>
-                  <th className="text-left px-4 py-3 font-medium text-cq-text-secondary text-xs tracking-wide">シーン</th>
-                  <th className="text-left px-4 py-3 font-medium text-cq-text-secondary text-xs tracking-wide">お届け先</th>
-                  <th className="text-left px-4 py-3 font-medium text-cq-text-secondary text-xs tracking-wide">スタイル</th>
-                  <th className="text-left px-4 py-3 font-medium text-cq-text-secondary text-xs tracking-wide">マエストロ</th>
-                  <th className="text-left px-4 py-3 font-medium text-cq-text-secondary text-xs tracking-wide">
-                    <button onClick={() => handleSort("totalAmount")} className="flex items-center gap-1 hover:text-cq-text transition-colors">
-                      金額 <SortIcon column="totalAmount" />
-                    </button>
-                  </th>
-                  <th className="text-left px-4 py-3 font-medium text-cq-text-secondary text-xs tracking-wide">ステータス</th>
-                  <th className="text-left px-4 py-3 font-medium text-cq-text-secondary text-xs tracking-wide">
-                    <button onClick={() => handleSort("orderedAt")} className="flex items-center gap-1 hover:text-cq-text transition-colors">
-                      注文日 <SortIcon column="orderedAt" />
-                    </button>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((order) => (
-                  <tr
-                    key={order.id}
-                    onClick={() => setSelectedOrder(order)}
-                    className="border-t border-cq-border-subtle hover:bg-cq-accent/[0.03] cursor-pointer transition-colors"
-                  >
-                    <td className="px-4 py-3.5 font-medium text-cq-text">{order.orderCode}</td>
-                    <td className="px-4 py-3.5 text-cq-text">{order.scene}</td>
-                    <td className="px-4 py-3.5 text-cq-text">{order.recipientName}</td>
-                    <td className="px-4 py-3.5 text-cq-text">{order.styleName}</td>
-                    <td className="px-4 py-3.5 text-cq-text">{order.maestroName}</td>
-                    <td className="px-4 py-3.5 text-cq-text">¥{order.totalAmount.toLocaleString("ja-JP")}</td>
-                    <td className="px-4 py-3.5">
-                      <span className={`px-2.5 py-0.5 text-xs font-medium rounded-full ${STATUS_COLORS[order.status] ?? ""}`}>
-                        {STATUS_LABELS[order.status] ?? order.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3.5 text-cq-text-secondary">{order.orderedAt}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="space-y-3">
+          {filtered.map((order) => (
+            <button
+              key={order.id}
+              type="button"
+              onClick={() => setSelectedOrder(order)}
+              className="w-full text-left py-5 border-b border-cq-border/15 last:border-0 hover:bg-cq-surface-raised/50 transition-colors cursor-pointer -mx-4 px-4 rounded-[var(--cq-radius-md)]"
+            >
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline gap-3 flex-wrap">
+                    <span className="text-sm text-cq-text">
+                      {order.recipientName}
+                    </span>
+                    <span className="text-xs text-cq-text-secondary/40">
+                      {order.recipientCompany}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-4 mt-1.5">
+                    <span className="text-[10px] tracking-[0.12em] uppercase text-cq-text-secondary/40">
+                      {order.styleName}
+                    </span>
+                    <span className="text-[11px] text-cq-text-secondary/40">
+                      by <span className="cq-heading-display">{order.maestroName}</span>
+                    </span>
+                    <span className="text-[10px] text-cq-text-secondary/30">
+                      {order.scene}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-6 shrink-0">
+                  <span className="text-sm font-light text-cq-accent tracking-wide">
+                    &yen;{order.totalAmount.toLocaleString()}
+                  </span>
+                  <span className="text-[11px] text-cq-text-secondary/50">
+                    {STATUS_LABELS[order.status] ?? order.status}
+                  </span>
+                  <span className="text-[11px] text-cq-text-secondary/30">
+                    {order.orderedAt}
+                  </span>
+                </div>
+              </div>
+            </button>
+          ))}
         </div>
       )}
 

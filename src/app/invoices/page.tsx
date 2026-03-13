@@ -20,12 +20,6 @@ const STATUS_LABELS: Record<string, string> = {
   overdue: "未払い",
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  issued: "bg-cq-accent/10 text-cq-accent",
-  paid: "bg-cq-success/10 text-cq-success",
-  overdue: "bg-cq-error/10 text-cq-error",
-};
-
 export default function InvoicesPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -35,28 +29,41 @@ export default function InvoicesPage() {
     : MOCK_INVOICES.filter((inv) => inv.status === statusFilter);
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-6xl mx-auto space-y-10">
       {/* Header */}
-      <h1 className="cq-heading text-2xl text-cq-text">ご請求書</h1>
+      <div>
+        <p className="text-[10px] tracking-[0.3em] uppercase text-cq-accent/80 mb-2">
+          INVOICES
+        </p>
+        <h1 className="cq-heading-display text-2xl text-cq-text font-light tracking-wide">
+          ご請求書
+        </h1>
+      </div>
 
-      {/* Filter */}
-      <div className="flex flex-wrap gap-2">
+      {/* Filter — text tabs */}
+      <div className="flex gap-6">
         {STATUS_TABS.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setStatusFilter(tab.key)}
-            className={`px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
+            className={`relative pb-2 text-[11px] tracking-[0.1em] transition-colors ${
               statusFilter === tab.key
-                ? "bg-cq-primary text-white"
-                : "bg-cq-surface text-cq-text-secondary hover:text-cq-text"
+                ? "text-cq-text"
+                : "text-cq-text-secondary/50 hover:text-cq-text-secondary"
             }`}
           >
             {tab.label}
+            {statusFilter === tab.key && (
+              <span className="absolute bottom-0 left-0 right-0 h-[0.5px] bg-cq-accent" />
+            )}
           </button>
         ))}
       </div>
 
-      {/* Invoice Cards */}
+      {/* Count */}
+      <p className="text-[11px] text-cq-text-secondary/40">{filtered.length} 件</p>
+
+      {/* Invoice List */}
       {filtered.length === 0 ? (
         <EmptyState
           icon={FileText}
@@ -64,9 +71,9 @@ export default function InvoicesPage() {
           description="該当する請求書が見つかりませんでした。"
         />
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-1">
           {filtered.map((invoice) => (
-            <InvoiceCard
+            <InvoiceRow
               key={invoice.id}
               invoice={invoice}
               isExpanded={expandedId === invoice.id}
@@ -79,7 +86,7 @@ export default function InvoicesPage() {
   );
 }
 
-function InvoiceCard({
+function InvoiceRow({
   invoice,
   isExpanded,
   onToggle,
@@ -89,32 +96,26 @@ function InvoiceCard({
   onToggle: () => void;
 }) {
   return (
-    <div className="bg-cq-surface-raised border border-cq-border rounded-[var(--cq-radius-lg)] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+    <div className="border-b border-cq-border/15 last:border-0">
       {/* Main Row */}
       <div
-        className="flex flex-col sm:flex-row sm:items-center gap-4 px-6 py-5 cursor-pointer"
+        className="flex flex-col sm:flex-row sm:items-center gap-3 py-5 cursor-pointer hover:bg-cq-surface-raised/50 transition-colors -mx-4 px-4 rounded-[var(--cq-radius-md)]"
         onClick={onToggle}
       >
-        {/* Left: Invoice number & period */}
         <div className="flex-1 min-w-0">
-          <p className="font-medium text-cq-text">{invoice.invoiceNumber}</p>
-          <p className="text-xs text-cq-text-secondary mt-0.5">{invoice.period}</p>
+          <p className="text-sm text-cq-text">{invoice.invoiceNumber}</p>
+          <p className="text-xs text-cq-text-secondary/40 mt-0.5">{invoice.period}</p>
         </div>
 
-        {/* Center: order count + amount */}
-        <div className="flex items-baseline gap-4">
-          <span className="text-sm text-cq-text-secondary">{invoice.orderCount}件</span>
-          <span className="font-serif text-xl text-cq-text">
-            ¥{invoice.totalAmount.toLocaleString("ja-JP")}
+        <div className="flex items-center gap-6 shrink-0">
+          <span className="text-xs text-cq-text-secondary/40">{invoice.orderCount}件</span>
+          <span className="text-sm font-light text-cq-accent tracking-wide">
+            &yen;{invoice.totalAmount.toLocaleString("ja-JP")}
           </span>
-        </div>
-
-        {/* Right: status + due date + actions */}
-        <div className="flex items-center gap-3 shrink-0">
-          <span className={`px-2.5 py-0.5 text-xs font-medium rounded-full ${STATUS_COLORS[invoice.status] ?? ""}`}>
+          <span className="text-[11px] text-cq-text-secondary/50">
             {STATUS_LABELS[invoice.status] ?? invoice.status}
           </span>
-          <span className="text-xs text-cq-text-secondary hidden sm:inline">
+          <span className="text-[11px] text-cq-text-secondary/30 hidden sm:inline">
             期限: {invoice.dueDate}
           </span>
           <button
@@ -122,23 +123,23 @@ function InvoiceCard({
               e.stopPropagation();
               generateInvoicePDF(invoice);
             }}
-            className="p-2 text-cq-text-secondary hover:text-cq-primary hover:bg-cq-surface rounded-md transition-colors"
+            className="text-cq-text-secondary/30 hover:text-cq-text transition-colors"
             title="PDF出力"
           >
-            <Download className="w-4 h-4" />
+            <Download className="w-3.5 h-3.5" />
           </button>
           {isExpanded ? (
-            <ChevronUp className="w-4 h-4 text-cq-text-secondary" />
+            <ChevronUp className="w-3.5 h-3.5 text-cq-text-secondary/30" />
           ) : (
-            <ChevronDown className="w-4 h-4 text-cq-text-secondary" />
+            <ChevronDown className="w-3.5 h-3.5 text-cq-text-secondary/30" />
           )}
         </div>
       </div>
 
       {/* Expanded Detail */}
       {isExpanded && (
-        <div className="px-6 py-4 border-t border-cq-border bg-cq-surface/30">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+        <div className="pb-6 pt-2 ml-0 sm:ml-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <DetailItem label="請求番号" value={invoice.invoiceNumber} />
             <DetailItem label="対象期間" value={invoice.period} />
             <DetailItem label="注文件数" value={`${invoice.orderCount}件`} />
@@ -155,8 +156,8 @@ function InvoiceCard({
 function DetailItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-xs text-cq-text-secondary mb-0.5">{label}</p>
-      <p className="text-cq-text font-medium">{value}</p>
+      <p className="text-[10px] tracking-[0.1em] text-cq-text-secondary/40 mb-1">{label}</p>
+      <p className="text-sm text-cq-text">{value}</p>
     </div>
   );
 }
