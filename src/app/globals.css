@@ -1,0 +1,230 @@
+@import "tailwindcss";
+
+:root {
+  /* PARIAN ARRIS Design System — aligned with CAQUEHIN toC */
+  --cq-color-primary: #0A0A0A;
+  --cq-color-primary-light: #1A1A1A;
+  --cq-color-primary-dark: #000000;
+  --cq-color-accent: #C4A265;
+  --cq-color-accent-light: #D4B275;
+  --cq-color-surface: #F5F2ED;
+  --cq-color-surface-raised: #FDFCFA;
+  --cq-color-text: #0A0A0A;
+  --cq-color-text-secondary: #6B6B6B;
+  --cq-color-success: #2D5A3D;
+  --cq-color-error: #8B2500;
+  --cq-color-warning: #B8860B;
+  --cq-color-border: #E0DCD6;
+  --cq-color-border-subtle: #ECEAE5;
+  --cq-color-accent-condolence: #8A8A8A;
+
+  /* ARRIS Radius — near-sharp, architectural */
+  --cq-radius-sm: 1px;
+  --cq-radius-md: 2px;
+  --cq-radius-lg: 3px;
+  --cq-radius-xl: 4px;
+  --cq-radius-full: 9999px;
+
+  /* Spacing */
+  --cq-space-xs: 4px;
+  --cq-space-sm: 8px;
+  --cq-space-md: 16px;
+  --cq-space-lg: 24px;
+  --cq-space-xl: 32px;
+  --cq-space-2xl: 48px;
+  --cq-space-3xl: 64px;
+
+  --background: var(--cq-color-surface);
+  --foreground: var(--cq-color-text);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-cq-primary: var(--cq-color-primary);
+  --color-cq-primary-light: var(--cq-color-primary-light);
+  --color-cq-primary-dark: var(--cq-color-primary-dark);
+  --color-cq-accent: var(--cq-color-accent);
+  --color-cq-accent-light: var(--cq-color-accent-light);
+  --color-cq-surface: var(--cq-color-surface);
+  --color-cq-surface-raised: var(--cq-color-surface-raised);
+  --color-cq-text: var(--cq-color-text);
+  --color-cq-text-secondary: var(--cq-color-text-secondary);
+  --color-cq-success: var(--cq-color-success);
+  --color-cq-error: var(--cq-color-error);
+  --color-cq-warning: var(--cq-color-warning);
+  --color-cq-border: var(--cq-color-border);
+  --color-cq-border-subtle: var(--cq-color-border-subtle);
+  --font-sans: "Noto Sans JP", "SF Pro Text", system-ui, sans-serif;
+  --font-display: "Playfair Display", "Georgia", serif;
+}
+
+/* ═══════════════════════════════════════════
+   PARIAN — Surface texture
+   ═══════════════════════════════════════════ */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* PARIAN micro-texture — porcelain feel */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E");
+}
+
+/* ═══════════════════════════════════════════
+   Typography
+   ═══════════════════════════════════════════ */
+/* Section heading — sans, medium */
+.cq-heading {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* Display — Playfair for maestro names */
+.cq-heading-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+/* Overline — UPPERCASE + wide tracking */
+.cq-overline {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 1;
+}
+
+/* Brand text — uppercase tracking */
+.cq-brand-text {
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 500;
+  font-size: 11px;
+}
+
+/* ═══════════════════════════════════════════
+   ARRIS — Components
+   ═══════════════════════════════════════════ */
+
+/* CQCard — debossed, stone-cut feel */
+.cq-card {
+  background: var(--cq-color-surface-raised);
+  border: 0.5px solid rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  border-radius: var(--cq-radius-md);
+}
+
+/* Kintsugi divider — gold accent line */
+.cq-kintsugi {
+  height: 0.5px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--cq-color-accent) 20%,
+    var(--cq-color-accent) 80%,
+    transparent 100%
+  );
+  opacity: 0.3;
+}
+
+/* CQButton Primary — deboss press effect */
+.cq-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 28px;
+  background: var(--cq-color-primary);
+  color: var(--cq-color-surface);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  border-radius: var(--cq-radius-sm);
+  transition: all 0.1s ease-in-out;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+.cq-btn-primary:hover {
+  background: var(--cq-color-primary-light);
+}
+.cq-btn-primary:active {
+  transform: scale(0.98) translateY(1px);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.15);
+}
+.cq-btn-primary:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* CQButton Secondary */
+.cq-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 28px;
+  background: transparent;
+  color: var(--cq-color-text);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  border: 1px solid var(--cq-color-border);
+  border-radius: var(--cq-radius-sm);
+  transition: all 0.1s ease-in-out;
+  cursor: pointer;
+}
+.cq-btn-secondary:hover {
+  border-color: var(--cq-color-primary);
+  background: rgba(0, 0, 0, 0.02);
+}
+.cq-btn-secondary:active {
+  transform: scale(0.98) translateY(1px);
+}
+
+/* PARIAN flower-bg */
+.cq-flower-bg {
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(196, 162, 101, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(10, 10, 10, 0.01) 0%, transparent 50%);
+}
+
+/* Form inputs — ARRIS style */
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--cq-color-text);
+  background: var(--cq-color-surface-raised);
+  border: 0.5px solid rgba(107, 107, 107, 0.3);
+  border-radius: var(--cq-radius-md);
+  outline: none;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.15s ease;
+}
+.form-input:focus {
+  border-color: var(--cq-color-primary);
+  box-shadow: 0 0 0 2px rgba(10, 10, 10, 0.05);
+}
+
+/* Hide scrollbar */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Condolence mode */
+[data-scene="condolence"] {
+  --cq-color-accent: var(--cq-color-accent-condolence);
+  --cq-color-primary: #4A4A4A;
+}
