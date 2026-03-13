@@ -2,36 +2,23 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import {
-  Flower2,
-  ArrowRight,
-  Crown,
-  TrendingUp,
-  Store,
-  Building2,
-  Heart,
-  Cake,
-} from "lucide-react";
-import {
-  FLOWER_PRODUCTS,
   STYLES,
   SCENES,
   PRICE_RANGES,
 } from "@/lib/mock-data";
 
-const sceneIcons: Record<string, React.ComponentType<{ className?: string }>> = {
-  inauguration: Crown,
-  ipo: TrendingUp,
-  opening: Store,
-  relocation: Building2,
-  gratitude: Heart,
-  condolence: Flower2,
-  birthday: Cake,
+// シーンごとの雰囲気を伝えるビジュアル（Unsplash）
+const sceneImages: Record<string, string> = {
+  inauguration: "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=400&h=300&fit=crop&q=80",
+  ipo: "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=400&h=300&fit=crop&q=80",
+  opening: "https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=400&h=300&fit=crop&q=80",
+  relocation: "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=400&h=300&fit=crop&q=80",
+  gratitude: "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=400&h=300&fit=crop&q=80",
+  condolence: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop&q=80",
+  birthday: "https://images.unsplash.com/photo-1457089328109-e5d9bd499191?w=400&h=300&fit=crop&q=80",
 };
-
-function countProductsByScene(sceneId: string): number {
-  return FLOWER_PRODUCTS.filter((p) => p.scene.includes(sceneId)).length;
-}
 
 type Tab = "scene" | "style" | "budget";
 
@@ -46,30 +33,28 @@ export default function BrowseTabs() {
 
   return (
     <section>
-      <div className="mb-6">
-        <p className="cq-brand-text text-xs text-cq-accent tracking-[0.2em] mb-1">
-          BROWSE
-        </p>
-        <h2 className="text-xl text-cq-text font-light tracking-wide">
-          アレンジメントを探す
-        </h2>
-      </div>
+      <p className="text-[10px] tracking-[0.3em] uppercase text-cq-accent/80 mb-2">
+        BROWSE
+      </p>
+      <h2 className="cq-heading-display text-2xl text-cq-text font-light tracking-wide mb-10">
+        アレンジメントを探す
+      </h2>
 
       {/* タブ */}
-      <div className="flex gap-1 mb-6 border-b border-cq-border">
+      <div className="flex gap-6 mb-10">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`relative px-5 py-3 text-sm font-medium transition-colors ${
+            className={`relative pb-3 text-[11px] tracking-[0.1em] transition-colors ${
               activeTab === tab.id
                 ? "text-cq-text"
-                : "text-cq-text-secondary hover:text-cq-text"
+                : "text-cq-text-secondary/50 hover:text-cq-text-secondary"
             }`}
           >
             {tab.label}
             {activeTab === tab.id && (
-              <span className="absolute bottom-0 left-2 right-2 h-[1.5px] bg-cq-accent" />
+              <span className="absolute bottom-0 left-0 right-0 h-[0.5px] bg-cq-accent" />
             )}
           </button>
         ))}
@@ -87,26 +72,23 @@ function SceneContent() {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {SCENES.map((scene) => {
-        const Icon = sceneIcons[scene.id] || Flower2;
-        const productCount = countProductsByScene(scene.id);
+        const imageUrl = sceneImages[scene.id] || sceneImages.inauguration;
         return (
           <Link
             key={scene.id}
             href="/order"
-            className="bg-cq-surface-raised rounded-[var(--cq-radius-md)] border border-cq-border p-5 hover:bg-cq-surface hover:shadow-sm hover:border-cq-accent/30 transition-all group"
+            className="relative h-[140px] md:h-[160px] rounded-[var(--cq-radius-md)] overflow-hidden group"
           >
-            <div className="flex items-start gap-3">
-              <div className="p-2 bg-cq-surface rounded-[var(--cq-radius-md)] group-hover:bg-cq-accent/5 transition-colors">
-                <Icon className="w-5 h-5 text-cq-primary" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-medium text-cq-text">
-                  {scene.label}
-                </p>
-                <p className="text-[11px] text-cq-text-secondary mt-0.5">
-                  {productCount}件のアレンジメント
-                </p>
-              </div>
+            <img
+              src={imageUrl}
+              alt={scene.label}
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
+            <div className="relative flex flex-col justify-end h-full p-4">
+              <p className="text-sm text-white font-medium drop-shadow-md">
+                {scene.label}
+              </p>
             </div>
           </Link>
         );
@@ -122,39 +104,31 @@ function StyleContent() {
         <Link
           key={style.id}
           href="/order"
-          className="flex-none w-[240px] snap-start rounded-[var(--cq-radius-lg)] overflow-hidden hover:shadow-lg transition-shadow group"
+          className="flex-none w-[240px] snap-start group"
         >
-          <div className="relative h-[260px]">
+          <div className="relative h-[280px] rounded-[var(--cq-radius-md)] overflow-hidden mb-4">
             <img
               src={style.imageUrl}
               alt={style.imageAlt}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-            <div className="absolute top-3 left-3">
-              <span
-                className={`text-[10px] font-medium px-2 py-0.5 rounded-[var(--cq-radius-sm)] ${
-                  style.tier === "NOMINATION"
-                    ? "bg-cq-accent/90 text-cq-primary"
-                    : "bg-white/20 text-white/90 backdrop-blur-sm"
-                }`}
-              >
-                {style.tier}
-              </span>
-            </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-5">
-              <p className="cq-brand-text text-lg tracking-[0.2em] text-white drop-shadow-md">
+              <p className="text-[10px] tracking-[0.2em] uppercase text-white/50 mb-1">
+                {style.tier}
+              </p>
+              <p className="cq-heading-display text-lg tracking-[0.15em] text-white drop-shadow-md">
                 {style.name}
-              </p>
-              <p className="text-xs mt-1 leading-relaxed text-white/80">
-                {style.description}
-              </p>
-              <p className="text-xs mt-2 font-medium flex items-center gap-1 text-white/90 group-hover:text-white transition-colors">
-                このスタイルを見る
-                <ArrowRight className="w-3 h-3" />
               </p>
             </div>
           </div>
+          <p className="text-xs text-cq-text-secondary/70 leading-relaxed mb-2">
+            {style.description}
+          </p>
+          <p className="text-[11px] text-cq-text-secondary/40 group-hover:text-cq-text-secondary transition-colors flex items-center gap-1">
+            このスタイルを見る
+            <ArrowRight className="w-3 h-3" />
+          </p>
         </Link>
       ))}
     </div>
@@ -163,32 +137,28 @@ function StyleContent() {
 
 function BudgetContent() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {PRICE_RANGES.map((range) => {
-        const borderColor =
-          range.id === "casual"
-            ? "border-l-cq-primary"
-            : range.id === "standard"
-              ? "border-l-cq-accent"
-              : "border-l-cq-text";
-        return (
-          <Link
-            key={range.id}
-            href="/order"
-            className={`bg-cq-surface-raised rounded-[var(--cq-radius-md)] border border-cq-border border-l-4 ${borderColor} p-5 hover:shadow-sm transition-shadow`}
-          >
-            <p className="cq-heading text-base text-cq-text mb-1">
-              {range.label}
-            </p>
-            <p className="text-sm text-cq-accent font-medium mb-1">
-              {range.range}
-            </p>
-            <p className="text-xs text-cq-text-secondary">
-              {range.description}
-            </p>
-          </Link>
-        );
-      })}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {PRICE_RANGES.map((range) => (
+        <Link
+          key={range.id}
+          href="/order"
+          className="group py-8 border-b border-cq-border/30 md:border-b-0 md:border-r md:border-cq-border/20 last:border-0 md:px-6 first:md:pl-0 last:md:pr-0"
+        >
+          <p className="text-sm font-light text-cq-accent tracking-wide mb-2">
+            {range.range}
+          </p>
+          <p className="cq-heading text-base text-cq-text mb-2">
+            {range.label}
+          </p>
+          <p className="text-xs text-cq-text-secondary/60 leading-relaxed mb-4">
+            {range.description}
+          </p>
+          <p className="text-[11px] text-cq-text-secondary/40 group-hover:text-cq-text-secondary transition-colors flex items-center gap-1">
+            この予算で探す
+            <ArrowRight className="w-3 h-3" />
+          </p>
+        </Link>
+      ))}
     </div>
   );
 }

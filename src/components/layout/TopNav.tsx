@@ -5,15 +5,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Plus, Bell, Menu, X, ChevronDown } from "lucide-react";
 
+// メインナビ: ストア体験に集中
 const navItems = [
-  { label: "ダッシュボード", href: "/" },
   { label: "ストア", href: "/store" },
-  { label: "店舗", href: "/shops" },
   { label: "注文する", href: "/order" },
   { label: "注文履歴", href: "/history" },
 ];
 
-const adminSubItems = [
+// アカウントメニューに格納
+const accountSubItems = [
+  { label: "ダッシュボード", href: "/" },
+  { label: "店舗を探す", href: "/shops" },
   { label: "記念日管理", href: "/anniversary" },
   { label: "請求書", href: "/invoices" },
   { label: "設定", href: "/settings" },
@@ -26,15 +28,13 @@ type TopNavProps = {
 
 export function TopNav({ isMobileMenuOpen, onToggleMobileMenu }: TopNavProps) {
   const pathname = usePathname();
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
-  const adminRef = useRef<HTMLDivElement>(null);
-
-  const isAdminActive = adminSubItems.some((item) => pathname.startsWith(item.href));
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const accountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (adminRef.current && !adminRef.current.contains(event.target as Node)) {
-        setIsAdminOpen(false);
+      if (accountRef.current && !accountRef.current.contains(event.target as Node)) {
+        setIsAccountOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -42,61 +42,74 @@ export function TopNav({ isMobileMenuOpen, onToggleMobileMenu }: TopNavProps) {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 h-[72px] bg-cq-surface-raised border-b border-cq-border flex items-center px-6 lg:px-10">
+    <header className="sticky top-0 z-50 h-[64px] bg-cq-surface/80 backdrop-blur-xl border-b border-cq-border/40 flex items-center px-6 lg:px-10">
       {/* Brand */}
-      <Link href="/" className="flex flex-col items-start shrink-0 mr-8">
-        <span className="cq-heading-display text-cq-primary text-xl tracking-[0.12em] leading-tight">
+      <Link href="/store" className="flex flex-col items-start shrink-0 mr-10">
+        <span className="cq-heading-display text-cq-primary text-lg tracking-[0.2em] leading-tight">
           CAQUEHIN
-        </span>
-        <span className="cq-overline text-[9px] text-cq-text-secondary leading-tight mt-0.5">
-          for Business
         </span>
       </Link>
 
-      {/* Desktop Navigation */}
-      <nav className="hidden md:flex items-center gap-1 flex-1">
+      {/* Desktop Navigation — minimal */}
+      <nav className="hidden md:flex items-center gap-8 flex-1">
         {navItems.map((item) => {
           const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`relative px-4 py-2 text-sm font-medium transition-colors rounded-[var(--cq-radius-md)] hover:bg-cq-surface ${
-                isActive ? "text-cq-text" : "text-cq-text-secondary hover:text-cq-text"
+              className={`relative py-1 text-[11px] tracking-[0.15em] uppercase transition-colors ${
+                isActive ? "text-cq-text" : "text-cq-text-secondary/70 hover:text-cq-text"
               }`}
             >
               {item.label}
               {isActive && (
-                <span className="absolute bottom-0 left-4 right-4 h-[1.5px] bg-cq-accent" />
+                <span className="absolute -bottom-[21px] left-0 right-0 h-[1px] bg-cq-accent" />
               )}
             </Link>
           );
         })}
+      </nav>
 
-        {/* Admin Dropdown */}
-        <div ref={adminRef} className="relative">
+      {/* Right Actions */}
+      <div className="hidden md:flex items-center gap-5 ml-auto">
+        <Link
+          href="/order"
+          className="text-[10px] tracking-[0.15em] uppercase text-cq-accent hover:text-cq-accent-light transition-colors flex items-center gap-1.5"
+        >
+          <Plus className="w-3 h-3" />
+          注文する
+        </Link>
+
+        <div className="w-[1px] h-4 bg-cq-border/40" />
+
+        <button className="relative p-1.5 text-cq-text-secondary/60 hover:text-cq-text transition-colors">
+          <Bell className="w-4 h-4" />
+        </button>
+
+        {/* Account Menu */}
+        <div ref={accountRef} className="relative">
           <button
-            onClick={() => setIsAdminOpen(!isAdminOpen)}
-            className={`relative flex items-center gap-1 px-4 py-2 text-sm font-medium transition-colors rounded-[var(--cq-radius-md)] hover:bg-cq-surface ${
-              isAdminActive ? "text-cq-text" : "text-cq-text-secondary hover:text-cq-text"
-            }`}
+            onClick={() => setIsAccountOpen(!isAccountOpen)}
+            className="w-7 h-7 bg-cq-primary text-cq-surface rounded-full flex items-center justify-center text-[10px] font-medium hover:bg-cq-primary-light transition-colors"
           >
-            管理
-            <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isAdminOpen ? "rotate-180" : ""}`} />
-            {isAdminActive && (
-              <span className="absolute bottom-0 left-4 right-4 h-[1.5px] bg-cq-accent" />
-            )}
+            M
           </button>
 
-          {isAdminOpen && (
-            <div className="absolute top-full left-0 mt-1 w-44 bg-cq-surface-raised border border-cq-border rounded-[var(--cq-radius-lg)] shadow-lg py-1 z-50">
-              {adminSubItems.map((item) => (
+          {isAccountOpen && (
+            <div className="absolute top-full right-0 mt-2 w-48 bg-cq-surface-raised border border-cq-border/50 rounded-[var(--cq-radius-md)] shadow-lg py-2 z-50">
+              <div className="px-4 py-2 border-b border-cq-border/30 mb-1">
+                <p className="text-xs text-cq-text font-medium">アカウント</p>
+              </div>
+              {accountSubItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  onClick={() => setIsAdminOpen(false)}
-                  className={`block px-4 py-2.5 text-sm transition-colors hover:bg-cq-surface ${
-                    pathname.startsWith(item.href) ? "text-cq-text font-medium" : "text-cq-text"
+                  onClick={() => setIsAccountOpen(false)}
+                  className={`block px-4 py-2 text-xs transition-colors hover:bg-cq-surface ${
+                    pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href))
+                      ? "text-cq-text"
+                      : "text-cq-text-secondary"
                   }`}
                 >
                   {item.label}
@@ -105,23 +118,6 @@ export function TopNav({ isMobileMenuOpen, onToggleMobileMenu }: TopNavProps) {
             </div>
           )}
         </div>
-      </nav>
-
-      {/* Right Actions */}
-      <div className="hidden md:flex items-center gap-3 ml-auto">
-        <Link
-          href="/order"
-          className="cq-btn-primary text-[10px] px-5 py-2.5"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          ORDER
-        </Link>
-        <button className="relative p-2 text-cq-text-secondary hover:text-cq-text hover:bg-cq-surface rounded-[var(--cq-radius-md)] transition-colors">
-          <Bell className="w-5 h-5" />
-        </button>
-        <button className="w-8 h-8 bg-cq-primary text-cq-surface rounded-full flex items-center justify-center text-sm font-medium">
-          M
-        </button>
       </div>
 
       {/* Mobile Hamburger */}
@@ -130,7 +126,7 @@ export function TopNav({ isMobileMenuOpen, onToggleMobileMenu }: TopNavProps) {
         className="md:hidden ml-auto p-2 text-cq-text-secondary hover:text-cq-text transition-colors"
         aria-label={isMobileMenuOpen ? "メニューを閉じる" : "メニューを開く"}
       >
-        {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
     </header>
   );

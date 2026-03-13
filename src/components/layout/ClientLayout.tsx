@@ -20,7 +20,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     <>
       <TopNav isMobileMenuOpen={isMobileMenuOpen} onToggleMobileMenu={toggleMobileMenu} />
       <MobileMenu isOpen={isMobileMenuOpen} onClose={closeMobileMenu} />
-      <main className="min-h-[calc(100vh-72px-80px)] px-6 lg:px-10 py-8">{children}</main>
+      <main className="min-h-[calc(100vh-64px-80px)] px-6 lg:px-10 py-10">{children}</main>
       <Footer />
     </>
   );
