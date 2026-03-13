@@ -20,6 +20,12 @@ const STATUS_LABELS: Record<string, string> = {
   overdue: "未払い",
 };
 
+const STATUS_TEXT_COLORS: Record<string, string> = {
+  issued: "text-cq-accent",
+  paid: "text-cq-success",
+  overdue: "text-cq-error",
+};
+
 export default function InvoicesPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -60,10 +66,7 @@ export default function InvoicesPage() {
         ))}
       </div>
 
-      {/* Count */}
-      <p className="text-[11px] text-cq-text-secondary/40">{filtered.length} 件</p>
-
-      {/* Invoice List */}
+      {/* Invoice Cards */}
       {filtered.length === 0 ? (
         <EmptyState
           icon={FileText}
@@ -71,9 +74,9 @@ export default function InvoicesPage() {
           description="該当する請求書が見つかりませんでした。"
         />
       ) : (
-        <div className="space-y-1">
+        <div className="space-y-4">
           {filtered.map((invoice) => (
-            <InvoiceRow
+            <InvoiceCard
               key={invoice.id}
               invoice={invoice}
               isExpanded={expandedId === invoice.id}
@@ -86,7 +89,7 @@ export default function InvoicesPage() {
   );
 }
 
-function InvoiceRow({
+function InvoiceCard({
   invoice,
   isExpanded,
   onToggle,
@@ -96,26 +99,28 @@ function InvoiceRow({
   onToggle: () => void;
 }) {
   return (
-    <div className="border-b border-cq-border/15 last:border-0">
-      {/* Main Row */}
+    <div className="bg-cq-surface-raised border border-cq-border/30 rounded-[var(--cq-radius-lg)] overflow-hidden hover:shadow-sm transition-shadow">
       <div
-        className="flex flex-col sm:flex-row sm:items-center gap-3 py-5 cursor-pointer hover:bg-cq-surface-raised/50 transition-colors -mx-4 px-4 rounded-[var(--cq-radius-md)]"
+        className="flex flex-col sm:flex-row sm:items-center gap-4 px-6 py-5 cursor-pointer"
         onClick={onToggle}
       >
         <div className="flex-1 min-w-0">
           <p className="text-sm text-cq-text">{invoice.invoiceNumber}</p>
-          <p className="text-xs text-cq-text-secondary/40 mt-0.5">{invoice.period}</p>
+          <p className="text-xs text-cq-text-secondary/60 mt-0.5">{invoice.period}</p>
         </div>
 
-        <div className="flex items-center gap-6 shrink-0">
-          <span className="text-xs text-cq-text-secondary/40">{invoice.orderCount}件</span>
+        <div className="flex items-center gap-4">
+          <span className="text-xs text-cq-text-secondary/60">{invoice.orderCount}件</span>
           <span className="text-sm font-light text-cq-accent tracking-wide">
             &yen;{invoice.totalAmount.toLocaleString("ja-JP")}
           </span>
-          <span className="text-[11px] text-cq-text-secondary/50">
+        </div>
+
+        <div className="flex items-center gap-3 shrink-0">
+          <span className={`text-[11px] font-medium ${STATUS_TEXT_COLORS[invoice.status] ?? "text-cq-text-secondary"}`}>
             {STATUS_LABELS[invoice.status] ?? invoice.status}
           </span>
-          <span className="text-[11px] text-cq-text-secondary/30 hidden sm:inline">
+          <span className="text-xs text-cq-text-secondary/50 hidden sm:inline">
             期限: {invoice.dueDate}
           </span>
           <button
@@ -123,23 +128,22 @@ function InvoiceRow({
               e.stopPropagation();
               generateInvoicePDF(invoice);
             }}
-            className="text-cq-text-secondary/30 hover:text-cq-text transition-colors"
+            className="p-1.5 text-cq-text-secondary/50 hover:text-cq-text rounded-md transition-colors"
             title="PDF出力"
           >
-            <Download className="w-3.5 h-3.5" />
+            <Download className="w-4 h-4" />
           </button>
           {isExpanded ? (
-            <ChevronUp className="w-3.5 h-3.5 text-cq-text-secondary/30" />
+            <ChevronUp className="w-4 h-4 text-cq-text-secondary/40" />
           ) : (
-            <ChevronDown className="w-3.5 h-3.5 text-cq-text-secondary/30" />
+            <ChevronDown className="w-4 h-4 text-cq-text-secondary/40" />
           )}
         </div>
       </div>
 
-      {/* Expanded Detail */}
       {isExpanded && (
-        <div className="pb-6 pt-2 ml-0 sm:ml-4">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <div className="px-6 py-4 border-t border-cq-border/20 bg-cq-surface/30">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
             <DetailItem label="請求番号" value={invoice.invoiceNumber} />
             <DetailItem label="対象期間" value={invoice.period} />
             <DetailItem label="注文件数" value={`${invoice.orderCount}件`} />
@@ -156,8 +160,8 @@ function InvoiceRow({
 function DetailItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-[10px] tracking-[0.1em] text-cq-text-secondary/40 mb-1">{label}</p>
-      <p className="text-sm text-cq-text">{value}</p>
+      <p className="text-xs text-cq-text-secondary/60 mb-0.5">{label}</p>
+      <p className="text-cq-text">{value}</p>
     </div>
   );
 }
