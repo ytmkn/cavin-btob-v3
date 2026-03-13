@@ -2,6 +2,10 @@ import Link from "next/link";
 import {
   ArrowRight,
   Sparkles,
+  Flower2,
+  Truck,
+  FileText,
+  Shield,
 } from "lucide-react";
 import {
   FLOWER_PRODUCTS,
@@ -38,6 +42,20 @@ export default function StorePage() {
             <br className="hidden md:block" />
             マエストロが一つひとつ心を込めてお仕立ていたします。
           </p>
+          {/* バリュープロポジション — ヒーロー内に控えめに */}
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-8">
+            {[
+              { icon: Flower2, text: "マエストロによるお仕立て" },
+              { icon: Truck, text: "最短翌日お届け" },
+              { icon: FileText, text: "請求書払い対応" },
+              { icon: Shield, text: "品質保証" },
+            ].map(({ icon: Icon, text }) => (
+              <div key={text} className="flex items-center gap-1.5">
+                <Icon className="w-3 h-3 text-white/30" />
+                <span className="text-[10px] text-white/40 tracking-wide">{text}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
