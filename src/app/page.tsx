@@ -89,7 +89,7 @@ export default function DashboardPage() {
             {currentMonthBirthdays.map((emp) => (
               <div
                 key={emp.id}
-                className="flex flex-col sm:flex-row items-start sm:items-center gap-4 py-5 border-b border-cq-border/20 last:border-0"
+                className="flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-white rounded-[var(--cq-radius-lg)] shadow-[0_2px_8px_rgba(0,0,0,0.06)] p-6 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)] transition-all duration-200"
               >
                 <Cake className="w-4 h-4 text-cq-accent/60 shrink-0 mt-0.5 sm:mt-0" />
                 <div className="flex-1 min-w-0">
@@ -136,7 +136,7 @@ export default function DashboardPage() {
               key={order.id}
               type="button"
               onClick={() => setSelectedOrder(order)}
-              className="w-full text-left py-5 border-b border-cq-border/20 last:border-0 hover:bg-cq-surface-raised/50 transition-colors cursor-pointer -mx-4 px-4 rounded-[var(--cq-radius-md)]"
+              className="w-full text-left bg-white rounded-[var(--cq-radius-lg)] shadow-[0_2px_8px_rgba(0,0,0,0.06)] p-6 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)] transition-all duration-200 cursor-pointer"
             >
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                 <div className="flex-1 min-w-0">
@@ -214,9 +214,9 @@ export default function DashboardPage() {
             <Link
               key={product.id}
               href="/store"
-              className="group"
+              className="group bg-white rounded-[var(--cq-radius-lg)] shadow-[0_2px_8px_rgba(0,0,0,0.06)] overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)] transition-all duration-200"
             >
-              <div className="relative h-[180px] overflow-hidden rounded-[var(--cq-radius-md)] mb-4">
+              <div className="relative h-[180px] overflow-hidden">
                 <img
                   src={product.imageUrl}
                   alt={product.name}
@@ -229,7 +229,7 @@ export default function DashboardPage() {
                   </h3>
                 </div>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between p-4">
                 <span className="text-xs font-light text-cq-accent/80 tracking-wide">
                   {product.priceRange}
                 </span>

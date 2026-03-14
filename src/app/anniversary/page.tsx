@@ -101,7 +101,7 @@ export default function AnniversaryPage() {
           {employees.map((emp) => (
             <div
               key={emp.id}
-              className="bg-cq-surface-raised border border-cq-border/30 rounded-[var(--cq-radius-lg)] p-5 hover:shadow-sm transition-shadow"
+              className="bg-white rounded-[var(--cq-radius-lg)] shadow-[0_2px_8px_rgba(0,0,0,0.06)] p-6 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)] transition-all duration-200"
             >
               <div className="flex items-start gap-3.5">
                 <div className="w-9 h-9 rounded-full bg-cq-accent/10 flex items-center justify-center shrink-0">

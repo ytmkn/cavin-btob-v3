@@ -214,7 +214,7 @@ export default function ShopFinder({ hideHeader = false }: { hideHeader?: boolea
 
       {/* 店舗リスト */}
       {filteredShops.length > 0 ? (
-        <div className="space-y-5">
+        <div className="space-y-6">
           {filteredShops.map((shop) => (
             <ShopCard key={shop.id} shop={shop} />
           ))}
@@ -286,7 +286,7 @@ function FilterButton({
 
 function ShopCard({ shop }: { shop: Shop }) {
   return (
-    <div className="bg-cq-surface-raised rounded-[var(--cq-radius-lg)] border border-cq-border overflow-hidden hover:shadow-md transition-shadow group">
+    <div className="bg-white rounded-[var(--cq-radius-lg)] shadow-[0_2px_8px_rgba(0,0,0,0.06)] overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)] transition-all duration-200 group">
       <div className="flex flex-col md:flex-row">
         {/* Shop Image */}
         <div className="relative md:w-[280px] h-[180px] md:h-auto shrink-0 overflow-hidden">

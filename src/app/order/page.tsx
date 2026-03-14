@@ -218,10 +218,10 @@ export default function OrderPage() {
                       setSelectedScene(scene.id);
                       setSelectedStyle(null);
                     }}
-                    className={`relative h-[110px] sm:h-[130px] rounded-[var(--cq-radius-md)] overflow-hidden group cursor-pointer transition-all ${
+                    className={`relative h-[110px] sm:h-[130px] rounded-[var(--cq-radius-lg)] overflow-hidden group cursor-pointer transition-all duration-200 shadow-[0_2px_8px_rgba(0,0,0,0.06)] ${
                       isSelected
-                        ? "ring-2 ring-cq-accent ring-offset-2 ring-offset-cq-surface"
-                        : "hover:shadow-md"
+                        ? "ring-2 ring-cq-accent ring-offset-2 ring-offset-cq-surface shadow-[0_4px_16px_rgba(0,0,0,0.1)]"
+                        : "hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)]"
                     }`}
                   >
                     <img
@@ -356,10 +356,10 @@ export default function OrderPage() {
                   key={maestro.id}
                   type="button"
                   onClick={() => setSelectedMaestro(maestro)}
-                  className={`w-full text-left p-6 rounded-[var(--cq-radius-lg)] border transition-all cursor-pointer ${
+                  className={`w-full text-left p-6 rounded-[var(--cq-radius-lg)] shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-200 cursor-pointer ${
                     isSelected
-                      ? "border-cq-accent/40 bg-cq-accent/[0.04] shadow-sm"
-                      : "border-cq-border/40 bg-cq-surface-raised hover:border-cq-accent/20 hover:shadow-sm"
+                      ? "bg-cq-accent/[0.04] shadow-[0_4px_16px_rgba(0,0,0,0.1)] ring-1 ring-cq-accent/30"
+                      : "bg-white hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)]"
                   }`}
                 >
                   <div className="flex flex-col sm:flex-row items-start gap-4">
@@ -553,10 +553,10 @@ function StyleCard({
     <button
       type="button"
       onClick={onSelect}
-      className={`group relative overflow-hidden rounded-[var(--cq-radius-lg)] border transition-all text-left cursor-pointer ${
+      className={`group relative overflow-hidden rounded-[var(--cq-radius-lg)] shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-200 text-left cursor-pointer ${
         isSelected
-          ? "border-cq-accent/40 shadow-md ring-1 ring-cq-accent/20"
-          : "border-cq-border/40 hover:border-cq-accent/30 hover:shadow-md"
+          ? "shadow-[0_4px_16px_rgba(0,0,0,0.1)] ring-1 ring-cq-accent/30"
+          : "hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)]"
       }`}
     >
       <div className="relative h-36 sm:h-40 overflow-hidden">

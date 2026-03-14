@@ -104,9 +104,9 @@ function StyleContent() {
         <Link
           key={style.id}
           href="/order"
-          className="flex-none w-[240px] snap-start group"
+          className="flex-none w-[240px] snap-start group bg-white rounded-[var(--cq-radius-lg)] shadow-[0_2px_8px_rgba(0,0,0,0.06)] overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)] transition-all duration-200"
         >
-          <div className="relative h-[280px] rounded-[var(--cq-radius-md)] overflow-hidden mb-4">
+          <div className="relative h-[280px] overflow-hidden">
             <img
               src={style.imageUrl}
               alt={style.imageAlt}
@@ -122,13 +122,15 @@ function StyleContent() {
               </p>
             </div>
           </div>
-          <p className="text-xs text-cq-text-secondary/70 leading-relaxed mb-2">
-            {style.description}
-          </p>
-          <p className="text-[11px] text-cq-text-secondary/40 group-hover:text-cq-text-secondary transition-colors flex items-center gap-1">
-            このスタイルを見る
-            <ArrowRight className="w-3 h-3" />
-          </p>
+          <div className="p-5">
+            <p className="text-xs text-cq-text-secondary/70 leading-relaxed mb-2">
+              {style.description}
+            </p>
+            <p className="text-[11px] text-cq-text-secondary/40 group-hover:text-cq-text-secondary transition-colors flex items-center gap-1">
+              このスタイルを見る
+              <ArrowRight className="w-3 h-3" />
+            </p>
+          </div>
         </Link>
       ))}
     </div>
@@ -142,7 +144,7 @@ function BudgetContent() {
         <Link
           key={range.id}
           href="/order"
-          className="group py-8 border-b border-cq-border/30 md:border-b-0 md:border-r md:border-cq-border/20 last:border-0 md:px-6 first:md:pl-0 last:md:pr-0"
+          className="group bg-white rounded-[var(--cq-radius-lg)] shadow-[0_2px_8px_rgba(0,0,0,0.06)] p-6 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)] transition-all duration-200"
         >
           <p className="text-sm font-light text-cq-accent tracking-wide mb-2">
             {range.range}

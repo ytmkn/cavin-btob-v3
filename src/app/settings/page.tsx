@@ -199,7 +199,7 @@ export default function SettingsPage() {
 /* --- Section Card — light container, no icon --- */
 function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-cq-surface-raised border border-cq-border/25 rounded-[var(--cq-radius-lg)] p-6 lg:p-8">
+    <div className="bg-white rounded-[var(--cq-radius-lg)] shadow-[0_2px_8px_rgba(0,0,0,0.06)] p-6 lg:p-8">
       <h2 className="text-[11px] tracking-[0.15em] uppercase text-cq-text-secondary/60 mb-5">
         {title}
       </h2>

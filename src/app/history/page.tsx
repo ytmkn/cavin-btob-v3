@@ -147,13 +147,13 @@ export default function HistoryPage() {
           description="フィルター条件を変更してお試しください。"
         />
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {filtered.map((order) => (
             <button
               key={order.id}
               type="button"
               onClick={() => setSelectedOrder(order)}
-              className="w-full text-left py-5 border-b border-cq-border/15 last:border-0 hover:bg-cq-surface-raised/50 transition-colors cursor-pointer -mx-4 px-4 rounded-[var(--cq-radius-md)]"
+              className="w-full text-left bg-white rounded-[var(--cq-radius-lg)] shadow-[0_2px_8px_rgba(0,0,0,0.06)] p-6 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)] transition-all duration-200 cursor-pointer"
             >
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                 <div className="flex-1 min-w-0">

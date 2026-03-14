@@ -99,7 +99,7 @@ function InvoiceCard({
   onToggle: () => void;
 }) {
   return (
-    <div className="bg-cq-surface-raised border border-cq-border/30 rounded-[var(--cq-radius-lg)] overflow-hidden hover:shadow-sm transition-shadow">
+    <div className="bg-white rounded-[var(--cq-radius-lg)] shadow-[0_2px_8px_rgba(0,0,0,0.06)] overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)] transition-all duration-200">
       <div
         className="flex flex-col sm:flex-row sm:items-center gap-4 px-6 py-5 cursor-pointer"
         onClick={onToggle}

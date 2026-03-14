@@ -119,9 +119,9 @@ export default function StorePage() {
           {restRecommended.map((product) => (
             <div
               key={product.id}
-              className="flex-none w-[260px] snap-start group"
+              className="flex-none w-[260px] snap-start group bg-white rounded-[var(--cq-radius-lg)] shadow-[0_2px_8px_rgba(0,0,0,0.06)] overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)] transition-all duration-200"
             >
-              <div className="relative h-[200px] overflow-hidden rounded-[var(--cq-radius-md)] mb-4">
+              <div className="relative h-[200px] overflow-hidden">
                 <img
                   src={product.imageUrl}
                   alt={product.name}
@@ -137,20 +137,22 @@ export default function StorePage() {
                   </h3>
                 </div>
               </div>
-              <p className="text-xs text-cq-text-secondary/70 leading-relaxed line-clamp-2 mb-3">
-                {product.description}
-              </p>
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-light text-cq-accent/80 tracking-wide">
-                  {product.priceRange}
-                </span>
-                <Link
-                  href="/order"
-                  className="text-[11px] text-cq-text-secondary/50 hover:text-cq-text transition-colors flex items-center gap-1"
-                >
-                  この花を贈る
-                  <ArrowRight className="w-3 h-3" />
-                </Link>
+              <div className="p-5">
+                <p className="text-xs text-cq-text-secondary/70 leading-relaxed line-clamp-2 mb-3">
+                  {product.description}
+                </p>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-light text-cq-accent/80 tracking-wide">
+                    {product.priceRange}
+                  </span>
+                  <Link
+                    href="/order"
+                    className="text-[11px] text-cq-text-secondary/50 hover:text-cq-text transition-colors flex items-center gap-1"
+                  >
+                    この花を贈る
+                    <ArrowRight className="w-3 h-3" />
+                  </Link>
+                </div>
               </div>
             </div>
           ))}
@@ -174,35 +176,37 @@ export default function StorePage() {
         <h2 className="cq-heading-display text-2xl text-cq-text font-light tracking-wide mb-12">
           マエストロのご紹介
         </h2>
-        <div className="space-y-10">
+        <div className="space-y-6">
           {MAESTROS.map((maestro) => (
             <div
               key={maestro.id}
-              className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-6 md:gap-10 items-start"
+              className="bg-white rounded-[var(--cq-radius-lg)] shadow-[0_2px_8px_rgba(0,0,0,0.06)] p-8 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)] transition-all duration-200"
             >
-              <div>
-                <h3 className="cq-heading-display text-2xl md:text-3xl text-cq-text tracking-wide">
-                  {maestro.stageName}
-                </h3>
-                <p className="text-[10px] tracking-[0.15em] uppercase text-cq-text-secondary/50 mt-1">
-                  {maestro.location}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-cq-text-secondary leading-relaxed mb-6">
-                  {maestro.description}
-                </p>
-                <div className="flex items-center gap-6">
-                  <Link
-                    href="/order"
-                    className="text-xs text-cq-accent hover:text-cq-accent-light transition-colors flex items-center gap-1.5"
-                  >
-                    この方にお任せする
-                    <ArrowRight className="w-3 h-3" />
-                  </Link>
-                  <span className="text-[10px] text-cq-text-secondary/40">
-                    {maestro.specialties.join(" / ")}
-                  </span>
+              <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-6 md:gap-10 items-start">
+                <div>
+                  <h3 className="cq-heading-display text-2xl md:text-3xl text-cq-text tracking-wide">
+                    {maestro.stageName}
+                  </h3>
+                  <p className="text-[10px] tracking-[0.15em] uppercase text-cq-text-secondary/50 mt-1">
+                    {maestro.location}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-cq-text-secondary leading-relaxed mb-6">
+                    {maestro.description}
+                  </p>
+                  <div className="flex items-center gap-6">
+                    <Link
+                      href="/order"
+                      className="text-xs text-cq-accent hover:text-cq-accent-light transition-colors flex items-center gap-1.5"
+                    >
+                      この方にお任せする
+                      <ArrowRight className="w-3 h-3" />
+                    </Link>
+                    <span className="text-[10px] text-cq-text-secondary/40">
+                      {maestro.specialties.join(" / ")}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -229,9 +233,9 @@ export default function StorePage() {
             <Link
               key={product.id}
               href="/order"
-              className="group"
+              className="group bg-white rounded-[var(--cq-radius-lg)] shadow-[0_2px_8px_rgba(0,0,0,0.06)] overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)] transition-all duration-200"
             >
-              <div className="relative h-[220px] overflow-hidden rounded-[var(--cq-radius-md)] mb-4">
+              <div className="relative h-[220px] overflow-hidden">
                 <img
                   src={product.imageUrl}
                   alt={product.name}
@@ -247,17 +251,19 @@ export default function StorePage() {
                   </h3>
                 </div>
               </div>
-              <p className="text-xs text-cq-text-secondary/70 leading-relaxed line-clamp-2 mb-3">
-                {product.description}
-              </p>
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-light text-cq-accent/80 tracking-wide">
-                  {product.priceRange}
-                </span>
-                <span className="text-[11px] text-cq-text-secondary/40 group-hover:text-cq-text-secondary transition-colors flex items-center gap-1">
-                  この花を贈る
-                  <ArrowRight className="w-3 h-3" />
-                </span>
+              <div className="p-5">
+                <p className="text-xs text-cq-text-secondary/70 leading-relaxed line-clamp-2 mb-3">
+                  {product.description}
+                </p>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-light text-cq-accent/80 tracking-wide">
+                    {product.priceRange}
+                  </span>
+                  <span className="text-[11px] text-cq-text-secondary/40 group-hover:text-cq-text-secondary transition-colors flex items-center gap-1">
+                    この花を贈る
+                    <ArrowRight className="w-3 h-3" />
+                  </span>
+                </div>
               </div>
             </Link>
           ))}
@@ -284,9 +290,9 @@ export default function StorePage() {
               <Link
                 key={product.id}
                 href="/order"
-                className="block break-inside-avoid group"
+                className="block break-inside-avoid group bg-white rounded-[var(--cq-radius-lg)] shadow-[0_2px_8px_rgba(0,0,0,0.06)] overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)] transition-all duration-200"
               >
-                <div className={`relative ${heightClass} overflow-hidden rounded-[var(--cq-radius-md)] mb-3`}>
+                <div className={`relative ${heightClass} overflow-hidden`}>
                   <img
                     src={product.imageUrl}
                     alt={product.name}
@@ -302,7 +308,7 @@ export default function StorePage() {
                     </h3>
                   </div>
                 </div>
-                <div className="flex items-center justify-between px-0.5">
+                <div className="flex items-center justify-between p-4">
                   <span className="text-[11px] font-light text-cq-accent/70 tracking-wide">
                     {product.priceRange}
                   </span>
